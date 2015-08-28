@@ -1,4 +1,5 @@
 require 'savon'
+require 'rest-client'
 
 class TodoPagoConector
   # método inicializar clase
@@ -65,21 +66,20 @@ class TodoPagoConector
     return response.hash
   end
 
+  ############################################################
+  ###Methodo publico que retorna el status de una operacion###
+  ############################################################
+  def getOperations(optionsOperations)
+    url = $j_wsdls['Services'] + 'api/Operations/GetByOperationId/MERCHANT/' + optionsOperations[:MERCHANT] + '/OPERATIONID/' + optionsOperations[:OPERATIONID]
+	xml = RestClient.get url
+	return xml
+  end
   ################################################################
   ###Methodo publico que descubre todas las promociones de pago###
   ################################################################
   def getAllPaymentMethods(optionsPaymentMethod)
-    message = {Merchant: optionsPaymentMethod[:MERCHANT]};
-    client = TodoPagoConector.getClientSoap($j_wsdls['PaymentMethods'],'PaymentMethods')
-    response= client.call(:get_all, message: message)
-    return response.hash
-  end
-
-  def getOperations(optionsOperations)
-    message = {Merchant: optionsOperations[:MERCHANT],
-               OPERATIONID: optionsOperations[:OPERATIONID]};
-    client = TodoPagoConector.getClientSoap($j_wsdls['Operations'],'Operations')
-    response= client.call(:get_by_operation_id, message: message)
-    return response.hash
+	url = $j_wsdls['Services'] + 'api/PaymentMethods/Get/MERCHANT/' + optionsPaymentMethod[:MERCHANT]
+	xml = RestClient.get url
+    return xml
   end
 end
