@@ -1,6 +1,13 @@
 require 'savon'
 require 'rest-client'
 
+$versionTodoPago = '1.0.2'
+
+
+$tenant = 't/1.1/'
+$soapAppend = 'services/'
+$restAppend = 'api/'
+
 class TodoPagoConector
   # método inicializar clase
   def initialize(j_header_http, j_wsdls, endpoint)
@@ -17,8 +24,8 @@ class TodoPagoConector
     return Savon.client(
         headers:$j_header_http,
         wsdl: wsdlService,
-        endpoint: $endPoint+sufijoEndpoint,
-        log: true,
+        endpoint: $endPoint + $soapAppend + $tenant +sufijoEndpoint,
+        log: false,
         log_level: :debug,
         ssl_verify_mode: :none,
         convert_request_keys_to: :none)
@@ -46,6 +53,10 @@ class TodoPagoConector
     message = {Security: options_comercio[:security],
                Merchant: options_comercio[:MERCHANT],
                EncodingMethod: options_comercio[:EncodingMethod],
+               URL_OK: options_comercio[:URL_OK],
+               URL_ERROR: options_comercio[:URL_ERROR],
+               EMAILCLIENTE: options_comercio[:EMAILCLIENTE],
+               Session: options_comercio[:Session],
                Payload: TodoPagoConector.buildPayload(options_operacion)};
 
     client = TodoPagoConector.getClientSoap($j_wsdls['Authorize'],'Authorize');
@@ -70,16 +81,18 @@ class TodoPagoConector
   ###Methodo publico que retorna el status de una operacion###
   ############################################################
   def getOperations(optionsOperations)
-    url = $j_wsdls['Services'] + 'api/Operations/GetByOperationId/MERCHANT/' + optionsOperations[:MERCHANT] + '/OPERATIONID/' + optionsOperations[:OPERATIONID]
-	xml = RestClient.get url
+    url = $endPoint + $tenant + $restAppend + 'Operations/GetByOperationId/MERCHANT/' + optionsOperations[:MERCHANT] + '/OPERATIONID/' + optionsOperations[:OPERATIONID]
+    #url = $j_wsdls['Services'] + 'api/Operations/GetByOperationId/MERCHANT/' + optionsOperations[:MERCHANT] + '/OPERATIONID/' + optionsOperations[:OPERATIONID]
+    xml = RestClient.get url
 	return xml
   end
   ################################################################
   ###Methodo publico que descubre todas las promociones de pago###
   ################################################################
   def getAllPaymentMethods(optionsPaymentMethod)
-	url = $j_wsdls['Services'] + 'api/PaymentMethods/Get/MERCHANT/' + optionsPaymentMethod[:MERCHANT]
-	xml = RestClient.get url
+    url = $endPoint + $tenant + $restAppend + 'PaymentMethods/Get/MERCHANT/' + optionsPaymentMethod[:MERCHANT]
+  	#url = $j_wsdls['Services'] + 'api/PaymentMethods/Get/MERCHANT/' + optionsPaymentMethod[:MERCHANT]
+  	xml = RestClient.get url
     return xml
   end
 end

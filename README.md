@@ -78,8 +78,6 @@ Esta versión soporta únicamente pago en moneda nacional argentina (CURRENCYCOD
 ```ruby
 j_wsdls = {
     "Authorize"=>"https://developers.todopago.com.ar/services/Authorize?wsdl",
-    "PaymentMethods"=>"https://developers.todopago.com.ar/services/PaymentMethods?wsdl",
-    "Operations"=>"https://developers.todopago.com.ar/services/Operations?wsdl"}
 ```
 - crear una estructura como la del ejemplo con los http header suministrados por todo pago
 ```ruby
@@ -90,6 +88,8 @@ j_header_http = {
 - crear una instancia de la clase TodoPago
 
 ```ruby		
+end_point = 'https://developers.todopago.com.ar/'
+
 conector = TodoPagoConector.new(j_header_http,
                                 j_wsdls,
                                 end_point) # End Point, wsdl y http_header provisto por TODO PAGO   

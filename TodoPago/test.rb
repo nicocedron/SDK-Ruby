@@ -5,13 +5,14 @@ j_header_http = {
 }
 
 j_wsdls = {
-    'Authorize'=> 'https://developers.todopago.com.ar/services/t/1.1/Authorize?wsdl',
-    'Services'=> 'https://developers.todopago.com.ar/t/1.1/'}
+    'Authorize'=> 'https://developers.todopago.com.ar/services/t/1.1/Authorize?wsdl'
+    }
 
+endpoint = 'https://developers.todopago.com.ar/'
 
 conector = TodoPagoConector.new(j_header_http,
                                 j_wsdls,
-                                "https://developers.todopago.com.ar/services/t/1.1/")
+                                endpoint)
 
 ##############################################Authorize################################################
 optionsSAR_operacion = Hash.new
@@ -75,8 +76,12 @@ optionsSAR_operacion[:CSITUNITPRICE]= "1254.40#15.00"
 
 optionsSAR_comercio = Hash.new
 optionsSAR_comercio[:Security]="1234567890ABCDEF1234567890ABCDEF"
-optionsSAR_comercio[:Merchant]= "2153"
+optionsSAR_comercio[:MERCHANT]= "2153"
 optionsSAR_comercio[:EncodingMethod]="XML"
+optionsSAR_comercio[:URL_OK]= "http://someurl.com/ok/"
+optionsSAR_comercio[:URL_ERROR]= "http://someurl.com/error/"
+optionsSAR_comercio[:EMAILCLIENTE]= "mail@someurl.com"
+optionsSAR_comercio[:Session]= "ABCDEF-1234-12221-FDE1-00000200"
 
 response = conector.sendAuthorizeRequest(optionsSAR_comercio,optionsSAR_operacion)
 puts(response)
