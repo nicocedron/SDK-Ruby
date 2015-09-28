@@ -94,7 +94,7 @@ optionsAnwser[:MERCHANT]= "2153"
 optionsAnwser[:RequestKey]= "710268a7-7688-c8bf-68c9-430107e6b9da"
 optionsAnwser[:AnswerKey]= "693ca9cc-c940-06a4-8d96-1ab0d66f3ee6"
 
-response = conector.getAuthorizeRequest(optionsAnwser)
+response = conector.getAuthorizeAnswer(optionsAnwser)
 puts(response)
 puts('------------------------------------------------------------------------------------------------')
 

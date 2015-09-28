@@ -1,7 +1,7 @@
 require 'savon'
 require 'rest-client'
 
-$versionTodoPago = '1.0.2'
+$versionTodoPago = '1.0.3'
 
 
 $tenant = 't/1.1/'
@@ -64,9 +64,15 @@ class TodoPagoConector
     return response.hash
   end
   #####################################################################################
-  ###Methodo publico que llama a la segunda funcion del servicio GetAuthorizeRequest###
+  ###Methodo publico que llama a la segunda funcion del servicio GetAuthorizeAnswer###
   #####################################################################################
+  # <b>DEPRECATED:</b> Please use <tt>getAuthorizeAnswer</tt> instead.
   def getAuthorizeRequest(optionsAnwser)
+    warn "[DEPRECATION] 'getAuthorizeRequest' is deprecated.  Please use 'getAuthorizeAnswer' instead."
+    return getAuthorizeAnswer(optionsAnwser)
+  end
+
+  def getAuthorizeAnswer(optionsAnwser)
     message = {Security: optionsAnwser[:security],
                Merchant: optionsAnwser[:MERCHANT],
                RequestKey: optionsAnwser[:RequestKey],

@@ -20,7 +20,7 @@ optionsAnwser[:MERCHANT]= ARGV.fetch(4)
 optionsAnwser[:RequestKey]= ARGV.fetch(5)
 optionsAnwser[:AnswerKey]= ARGV.fetch(6)
 
-response = conector.getAuthorizeRequest(optionsAnwser)
+response = conector.getAuthorizeAnswer(optionsAnwser)
 #Call GS
 print response, "\n"
 
