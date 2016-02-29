@@ -1,18 +1,13 @@
+
 require "../lib/todo_pago_conector.rb"
 
 j_header_http = {
-    'Authorization'=>'PRISMA f3d8b72c94ab4a06be2ef7c95490f7d3', 'Username'=>'>Test'
+    'Authorization'=>'TODOPAGO 1540601877EB2059EF50240E46ABD10E', 'Username'=>'>Test'
 }
-
-j_wsdls = {
-    'Authorize'=> 'https://developers.todopago.com.ar/services/t/1.1/Authorize?wsdl'
-    }
 
 endpoint = 'https://developers.todopago.com.ar/'
 
-conector = TodoPagoConector.new(j_header_http,
-                                j_wsdls,
-                                endpoint)
+conector = TodoPagoConector.new(j_header_http, "test")
 
 ##############################################Authorize################################################
 optionsSAR_operacion = Hash.new
@@ -104,7 +99,7 @@ optionsPaymentMethods=Hash.new
 optionsPaymentMethods[:MERCHANT]= "2153"
 
 response = conector.getAllPaymentMethods(optionsPaymentMethods)
-puts(response)
+#puts(response)
 #Pasar del XML a Hash - Rails
 #require 'active_support'
 #hash = Hash.from_xml(response)
@@ -129,3 +124,26 @@ puts(response)
 #hash = XmlSimple.xml_in(response)
 puts('------------------------------------------------------------------------------------------------')
 
+############################################returnRequest##############################################
+puts("DEVOLUCION DE 1 PESO")
+optionRR=Hash.new
+optionRR[:Merchant] = "2866"
+optionRR[:Security] = "1540601877EB2059EF50240E46ABD10E"
+optionRR[:RequestKey] = "eeda0188-ec60-d72a-dab8-26bfd0fa5f10"
+optionRR[:AMOUNT] = "1"
+
+response = conector.returnRequest(optionRR)
+puts(response)
+puts('------------------------------------------------------------------------------------------------')
+
+puts("GET BY RANGE")
+#GBRDT
+optionsGBRDT=Hash.new
+optionsGBRDT[:Merchant]= "2866"
+optionsGBRDT[:STARTDATE]= "2016-01-01"
+optionsGBRDT[:ENDDATE]= "2016-02-19"
+optionsGBRDT[:PAGENUMBER] = 1
+
+response = conector.getByRangeDateTime(optionsGBRDT)
+puts(response)
+puts('------------------------------------------------------------------------------------------------')

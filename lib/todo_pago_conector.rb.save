@@ -124,15 +124,12 @@ class TodoPagoConector
   ##############################################################################
   ##$url = $this->end_point.TODOPAGO_ENDPOINT_TENATN.'api/Operations/GetByRangeDateTime/MERCHANT/'. $arr_datos["MERCHANT"] . '/STARTDATE/' . $arr_datos["STARTDATE"] . '/ENDDATE/' . $arr_datos["ENDDATE"] . '/PAGENUMBER/' . $arr_datos["PAGENUMBER"];
  
- def getByRangeDateTime(optionsAnswer)
-    url = $endPoint + $tenant + $restAppend +"Operations/GetByRangeDateTime/MERCHANT/#{optionsAnswer[:Merchant]}/STARTDATE/#{optionsAnswer[:STARTDATE]}/ENDDATE/#{optionsAnswer[:ENDDATE]}/PAGENUMBER/#{optionsAnswer[:PAGENUMBER]}"         
-    response = RestClient.get url
-    return response
+	 def getByRangeDateTime(optionsAnwser)
+    url = $endPoint + $tenant + $restAppend +'Operations/GetByRangeDateTime/MERCHANT/'+ optionsAnswer[:Merchant] +'/STARTDATE/'+operationAnswer[:STARTDATE]+'/ENDDATE/'+opertionsAnswer[:ENDDATE]+'/PAGENUMBER/'+optionsAnswer[:PAGENUMBER]         
+    response= client.call(:get_by_range_date_time,message:message)
+    #GetByRangeDateTime
+    return response.hash
   end
-
-  ##############################################################################
-  ###Devolucion                                                              ###
-  ##############################################################################
 
   def returnRequest(refoundOptions)
     message = {

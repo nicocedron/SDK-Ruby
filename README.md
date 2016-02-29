@@ -77,12 +77,16 @@ Esta versión soporta únicamente pago en moneda nacional argentina (CURRENCYCOD
 
 ```ruby
 j_wsdls = {
-    "Authorize"=>"https://developers.todopago.com.ar/services/Authorize?wsdl",
+    #Remoto
+    'Authorize'=> 'https://developers.todopago.com.ar/services/t/1.1/Authorize?wsdl'
+    #Local
+    #'Authorize'=> '../lib/Authorize.wsdl'
+    }
 ```
 - crear una estructura como la del ejemplo con los http header suministrados por todo pago
 ```ruby
 j_header_http = {
-    "Authorization"=>"PRISMA 912EC803B2CE49E4A541068D495AB570"
+    "Authorization"=>"PRISMA f3d8b72c94ab4a06be2ef7c95490f7d3"
 }
 ```
 - crear una instancia de la clase TodoPago
@@ -105,11 +109,20 @@ optionsSAR_comercio debe ser un Hash con la siguiente estructura:
 		
 ```ruby
 optionsSAR_comercio = Hash.new
-optionsSAR_comercio[:Security]="1234567890ABCDEF1234567890ABCDEF"
-optionsSAR_comercio[:Merchant]= "350"
+optionsSAR_comercio[:Security]="f3d8b72c94ab4a06be2ef7c95490f7d3"
+optionsSAR_comercio[:Merchant]= "2153"
 optionsSAR_comercio[:EncodingMethod]="XML"
-optionsSAR_comercio[:URL_OK]="http://www.misitio.com/controller/success"
-optionsSAR_comercio[:URL_ERROR]="http://www.misitio.com/controller/fail"
+optionsSAR_comercio[:URL_OK]="http://someurl.com/ok/"
+optionsSAR_comercio[:URL_ERROR]="http://someurl.com/error/"
+optionsSAR_comercio[:Session]= "ABCDEF-1234-12221-FDE1-00000200"
+
+#Optionals
+optionsSAR_operacion = Hash.new
+optionsSAR_operacion[:AVAILABLEPAYMENTMETHODSIDS]= "1#194#43#45"
+optionsSAR_operacion[:PUSHNOTIFYMETHOD]= ""
+optionsSAR_operacion[:PUSHNOTIFYENDPOINT]= ""  
+optionsSAR_operacion[:PUSHNOTIFYSTATES]= ""
+
 ```		
 
 <ins><strong>Datos propios de la operación</strong></ins>		
@@ -117,20 +130,20 @@ optionsSAR_operacion debe ser un Hash con la siguiente estructura:
 		
 ```ruby
 optionsSAR_operacion = Hash.new
-optionsSAR_operacion[:MERCHANT] = "305"
-optionsSAR_operacion[:OPERATIONID] = "ABCDEF-1234-12221-FDE1-00000200"
+optionsSAR_operacion[:MERCHANT] = "2153"
+optionsSAR_operacion[:OPERATIONID] = "8000"
 optionsSAR_operacion[:CURRENCYCODE] = "032"
-optionsSAR_operacion[:AMOUNT] = "54.00"
+optionsSAR_operacion[:AMOUNT] = "1.00"
 ```		
 La variable response contendrá una estuctura en la cual <strong>url_request</strong> nos dara la url del formulario de pago a la cual habra que redirigir al comprador y <strong>request_key</strong> será un datos que será requerido en el paso de la confirmación de la transacción a través del método <strong>getAuthorizeAnswer</strong>
 ####3.Confirmación de transacción.		
 En este caso hay que llamar a getAuthorizeAnswer(), enviando como parámetro un Hash como se describe a continuación.		
 ```ruby
 optionsAnwser=Hash.new
-optionsAnwser[:Security]= "1234567890ABCDEF1234567890ABCDEF" #Token de seguridad, provisto por TODO PAGO. MANDATORIO.
-optionsAnwser[:MERCHANT]= "305"
-optionsAnwser[:RequestKey]= "8496472a-8c87-e35b-dcf2-94d5e31eb12f"
-optionsAnwser[:AnswerKey]= "8496472a-8c87-e35b-dcf2-94d5e31eb12f"
+optionsAnwser[:Security]= "f3d8b72c94ab4a06be2ef7c95490f7d3" #Token de seguridad, provisto por TODO PAGO. MANDATORIO.
+optionsAnwser[:MERCHANT]= "2153"
+optionsAnwser[:RequestKey]= "710268a7-7688-c8bf-68c9-430107e6b9da" #Valor retornado en el SendAuthorizeRequest
+optionsAnwser[:AnswerKey]= "693ca9cc-c940-06a4-8d96-1ab0d66f3ee6"  #Valor que figura en la URL del redirect luego de realizar el pago
 
 response = conector.getAuthorizeAnswer(optionsAnwser)
 ```		
@@ -146,30 +159,32 @@ optionsSAR_operacion[:CSBTCITY] = "Villa General Belgrano" #Ciudad de facturaci�
 optionsSAR_operacion[:CSBTCOUNTR]="AR" #País de facturación. MANDATORIO. Código ISO. (http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)		
 optionsSAR_operacion[:CSBTCUSTOMERID]="453458" #Identificador del usuario al que se le emite la factura. MANDATORIO. No puede contener un correo electrónico.		
 optionsSAR_operacion[:CSBTIPADDRESS]="192.0.0.4" #IP de la PC del comprador. MANDATORIO.		
-optionsSAR_operacion[:CSBTEMAIL]="decidir@hotmail.com" #Mail del usuario al que se le emite la factura. MANDATORIO.	
+optionsSAR_operacion[:CSBTEMAIL]="some@someurl.com" #Mail del usuario al que se le emite la factura. MANDATORIO.	
 optionsSAR_operacion[:CSBTFIRSTNAME]="Juan" #Nombre del usuario al que se le emite la factura. MANDATORIO.		
 optionsSAR_operacion[:CSBTLASTNAME]="Perez" #Apellido del usuario al que se le emite la factura. MANDATORIO.		
 optionsSAR_operacion[:CSBTPHONENUMBER]="541160913988" #Teléfono del usuario al que se le emite la factura. No utilizar guiones, puntos o espacios. Incluir código de país. MANDATORIO.		
-optionsSAR_operacion[:CSBTPOSTALCODE]="C1010AAP" #Código Postal de la dirección de facturación. MANDATORIO.		
+optionsSAR_operacion[:CSBTPOSTALCODE]="1010" #Código Postal de la dirección de facturación. MANDATORIO.		
 optionsSAR_operacion[:CSBTSTATE]="B" #Provincia de la dirección de facturación. MANDATORIO. Ver tabla anexa de provincias.
-optionsSAR_operacion[:CSBTSTREET1]="Cerrito 740" #Domicilio de facturación (calle y nro). MANDATORIO.		
-optionsSAR_operacion[:CSBTSTREET2]="Piso 8" #Complemento del domicilio. (piso, departamento). NO MANDATORIO.		
+optionsSAR_operacion[:CSBTSTREET1]="Some Street 2153" #Domicilio de facturación (calle y nro). MANDATORIO.		
+optionsSAR_operacion[:CSBTSTREET2]="" #Complemento del domicilio. (piso, departamento). NO MANDATORIO.		
 optionsSAR_operacion[:CSPTCURRENCY]="ARS" #Moneda. MANDATORIO.		
-optionsSAR_operacion[:CSPTGRANDTOTALAMOUNT]="125.38" #Con decimales opcional usando el puntos como separador de decimales. No se permiten comas, ni como separador de miles ni como separador de decimales. MANDATORIO. (Ejemplos:$125,38-> 125.38 $12-> 12 o 12.00)
+optionsSAR_operacion[:CSPTGRANDTOTALAMOUNT]="10.01" #Con decimales opcional usando el puntos como separador de decimales. No se permiten comas, ni como separador de miles ni como separador de decimales. MANDATORIO. (Ejemplos:$125,38-> 125.38 $12-> 12 o 12.00)
 optionsSAR_operacion[:CSMDD7]="" # Fecha registro comprador(num Dias). NO MANDATORIO.		
-optionsSAR_operacion[:CSMDD8]="Y" #Usuario Guest? (Y/N). En caso de ser Y, el campo CSMDD9 no deberá enviarse. NO MANDATORIO.
-optionsSAR_operacion[:CSMDD9]="asjhskajshiuyiquwyiqw" #Customer password Hash: criptograma asociado al password del comprador final. NO MANDATORIO.	
-optionsSAR_operacion[:CSMDD10]="5" #Histórica de compras del comprador (Num transacciones). NO MANDATORIO.		
-optionsSAR_operacion[:CSMDD11]="540111564893736" #Customer Cell Phone. NO MANDATORIO.		
-optionsSAR_operacion[:CSSTCITY]="rosario" #Ciudad de enví­o de la orden. MANDATORIO.		
+optionsSAR_operacion[:CSMDD8]="" #Usuario Guest? (Y/N). En caso de ser Y, el campo CSMDD9 no deberá enviarse. NO MANDATORIO.
+optionsSAR_operacion[:CSMDD9]="" #Customer password Hash: criptograma asociado al password del comprador final. NO MANDATORIO.	
+optionsSAR_operacion[:CSMDD10]="" #Histórica de compras del comprador (Num transacciones). NO MANDATORIO.		
+optionsSAR_operacion[:CSMDD11]="" #Customer Cell Phone. NO MANDATORIO.		
+
+#Retail
+optionsSAR_operacion[:CSSTCITY]="Villa General Belgrano" #Ciudad de enví­o de la orden. MANDATORIO.		
 optionsSAR_operacion[:CSSTCOUNTRY]="" #País de envío de la orden. MANDATORIO.		
-optionsSAR_operacion[:CSSTEMAIL]="jose@gmail.com" #Mail del destinatario, MANDATORIO.		
+optionsSAR_operacion[:CSSTEMAIL]="some@someurl.com" #Mail del destinatario, MANDATORIO.		
 optionsSAR_operacion[:CSSTFIRSTNAME]="Jose" #Nombre del destinatario. MANDATORIO.		
 optionsSAR_operacion[:CSSTLASTNAME]="Perez" #Apellido del destinatario. MANDATORIO.		
-optionsSAR_operacion[:CSSTPHONENUMBER]="541155893737" #Número de teléfono del destinatario. MANDATORIO.		
-optionsSAR_operacion[:CSSTPOSTALCODE]="1414" #Código postal del domicilio de envío. MANDATORIO.		
+optionsSAR_operacion[:CSSTPHONENUMBER]="541160913988" #Número de teléfono del destinatario. MANDATORIO.		
+optionsSAR_operacion[:CSSTPOSTALCODE]="1010" #Código postal del domicilio de envío. MANDATORIO.		
 optionsSAR_operacion[:CSSTSTATE]="D" #Provincia de envío. MANDATORIO. Son de 1 caracter		
-optionsSAR_operacion[:CSSTSTREET1]="San Martín 123" #Domicilio de envío. MANDATORIO.		
+optionsSAR_operacion[:CSSTSTREET1]="Some Street 2153" #Domicilio de envío. MANDATORIO.		
 optionsSAR_operacion[:CSMDD12]="" #Shipping DeadLine (Num Dias). NO MADATORIO.		
 optionsSAR_operacion[:CSMDD13]="" #Método de Despacho. NO MANDATORIO.		
 optionsSAR_operacion[:CSMDD14]="" #Customer requires Tax Bill ? (Y/N). NO MANDATORIO.		
@@ -178,17 +193,19 @@ optionsSAR_operacion[:CSMDD16]="" #Promotional / Coupon Code. NO MANDATORIO.
 
 #Datos a enviar por cada producto, los valores deben estar separado con #.		
 optionsSAR_operacion[:CSITPRODUCTCODE]="electronic_good" #Código de producto. CONDICIONAL. Valores posibles(adult_content;coupon;default;electronic_good;electronic_software;gift_certificate;handling_only;service;shipping_and_handling;shipping_only;subscription)		
-optionsSAR_operacion[:CSITPRODUCTDESCRIPTION]="NOTEBOOK L845 SP4304LA DF TOSHIBA" #Descripción del producto. CONDICIONAL.
-optionsSAR_operacion[:CSITPRODUCTNAME]="NOTEBOOK L845 SP4304LA DF TOSHIBA" #Nombre del producto. CONDICIONAL.		
-optionsSAR_operacion[:CSITPRODUCTSKU]="LEVJNSL36GN" #Código identificador del producto. CONDICIONAL.		
-optionsSAR_operacion[:CSITTOTALAMOUNT]="1254.40" #CSITTOTALAMOUNT=CSITUNITPRICE*CSITQUANTITY "999999[.CC]" Con decimales opcional usando el puntos como separador de decimales. No se permiten comas, ni como separador de miles ni como separador de decimales. CONDICIONAL.		
+optionsSAR_operacion[:CSITPRODUCTDESCRIPTION]="Test Prd Description" #Descripción del producto. CONDICIONAL.
+optionsSAR_operacion[:CSITPRODUCTNAME]="TestPrd" #Nombre del producto. CONDICIONAL.		
+optionsSAR_operacion[:CSITPRODUCTSKU]="SKU1234" #Código identificador del producto. CONDICIONAL.		
+optionsSAR_operacion[:CSITTOTALAMOUNT]="10.01" #CSITTOTALAMOUNT=CSITUNITPRICE*CSITQUANTITY "999999[.CC]" Con decimales opcional usando el puntos como separador de decimales. No se permiten comas, ni como separador de miles ni como separador de decimales. CONDICIONAL.		
 optionsSAR_operacion[:CSITQUANTITY]="1" #Cantidad del producto. CONDICIONAL.		
-optionsSAR_operacion[:CSITUNITPRICE]="1254.40" #Formato Idem CSITTOTALAMOUNT. CONDICIONAL.		
+optionsSAR_operacion[:CSITUNITPRICE]="10.01" #Formato Idem CSITTOTALAMOUNT. CONDICIONAL.		
 ...........................................................		
 ```		
 
 ## Ejemplo		          
-Existe un ejemplo en la carpeta https://github.com/TodoPago/sdk-ruby/blob/master/TodoPago/test.rb que muestra los resultados de los métodos principales del SDK.
+Existe un ejemplo en la carpeta https://github.com/TodoPago/sdk-ruby/blob/master/TodoPago/test.rb el cual tiene configurados estos valores, y muestra los resultados de los métodos principales del SDK.
+Existe un segundo ejemplo con interfaz grafica, para facil configuracion y prueba en https://github.com/TodoPago/sdk-ruby/blob/master/EjemploUI/main.py (el ejemplo esta hecho en PY pero ejecuta el codigo Ruby por detras)
+
 [<sub>Volver a inicio</sub>](#inicio)
 
 <a name="test"></a>
@@ -210,6 +227,85 @@ conector.getOperations(optionsOperations)
 ```
 [<sub>Volver a inicio</sub>](#inicio)
 
+<a name="GBRDT"></a>
+##Consulta de operaciones por rango de tiempo.
+En este caso hay que llamar a getByRangeDateTime() y devolvera todas las operaciones realizadas en el rango de fechas dado
+```python
+optionsGBRDT=Hash.new
+optionsGBRDT[:Merchant]= "2866"
+optionsGBRDT[:STARTDATE]= "2016-01-01"
+optionsGBRDT[:ENDDATE]= "2016-02-19"
+optionsGBRDT[:PAGENUMBER] = "1"
+
+response = tpc.getByRangeDateTime(optionsGBRDT)
+
+```
+[<sub>Volver a inicio</sub>](#inicio)
+
+
+<a name="devoluciones"></a>
+## Anulaciones y Devoluciones
+
+La SDK dispone de métodos para realizar la anulación o la devolución online, total o parcial, de una transacción realizada a traves de TodoPago.
+
+#### Anulaciones
+
+Se debe llamar al método ```voidRequest``` de la siguiente manera:
+```ruby
+
+options = Hash.new
+
+options[:Security] = "837BE68A892F06C17B944F344AEE8F5F", #API Key del comercio asignada por TodoPago 
+options[:Merchant] = "35", #Merchant o Nro de comercio asignado por TodoPago
+options[:RequestKey] = "6d2589f2-37e6-1334-7565-3dc19404480c" #RequestKey devuelto como respuesta del servicio SendAutorizeRequest
+
+resp = tpc.voidRequest(options)	
+```
+
+También se puede llamar al método ```voidRequest``` de la esta otra manera:
+```ruby
+
+options[:Security] = "837BE68A892F06C17B944F344AEE8F5F", #API Key del comercio asignada por TodoPago 
+options[:Merchant] = "35", #Merchant o Nro de comercio asignado por TodoPago
+options[:AuthorizationKey] = "6d2589f2-37e6-1334-7565-3dc19404480c" #AuthorizationKey devuelto como respuesta del servicio GetAuthorizeAnswer
+
+resp = tpc.voidRequest(options)	
+```
+
+#### Devoluciones
+
+Se debe llamar al método ```returnRequest``` de la siguiente manera:
+```ruby
+
+options = Hash.new
+
+options[:Security]= "837BE68A892F06C17B944F344AEE8F5F", #API Key del comercio asignada por TodoPago 
+options[:Merchant] ="35", #Merchant o Nro de comercio asignado por TodoPago
+options[:RequestKey] = "6d2589f2-37e6-1334-7565-3dc19404480c" #RequestKey devuelto como respuesta del servicio SendAutorizeRequest
+options[:AMOUNT] = "23.50" #Opcional. Monto a devolver, si no se envía, se trata de una devolución total
+
+resp = tpc.returnRequest(options)
+```
+
+También se puede llamar al método ```returnRequest``` de la esta otra manera:
+```ruby
+options = Hash.new
+
+options[:Security] = "837BE68A892F06C17B944F344AEE8F5F", #API Key del comercio asignada por TodoPago 
+options[:Merchant] = "35", #Merchant o Nro de comercio asignado por TodoPago
+options[:AuthorizationKey] = "6d2589f2-37e6-1334-7565-3dc19404480c" #AuthorizationKey devuelto como respuesta del servicio GetAuthorizeAnswer
+options[:AMOUNT] = "1.00" #Opcional. Monto a devolver, si no se envía, se trata de una devolución total
+
+resp = tpc.returnRequest(options)	
+```
+
+#### Respuesta de los servicios
+
+Si la operación fue realizada correctamente se informará con un código 2011 y un mensaje indicando el éxito de la operación.
+
+``` ruby
+{:envelope=>{:body=>{:return_response=>{:status_code=>"2011", :status_message=>"TX OK", :authorization_key=>"318974f2-4866-d8e7-9622-9ac21aec0df2", :authorizationcode=>"2011", :"@xmlns:api"=>"http://api.todopago.com.ar"}}, :"@xmlns:soapenv"=>"http://schemas.xmlsoap.org/soap/envelope/"}}
+```
 <a name="tablas"></a>
 ## Tablas de Referencia		
 ######[Códigos de Estado](#cde)		
@@ -264,7 +360,7 @@ conector.getOperations(optionsOperations)
 <tr><td>Chubut</td><td>U</td></tr>		
 <tr><td>Córdoba</td><td>X</td></tr>		
 <tr><td>Corrientes</td><td>W</td></tr>		
-<tr><td>Entre Ríos</td><td>R</td></tr>		
+<tr><td>Entre Ríos</td><td>E</td></tr>		
 <tr><td>Formosa</td><td>P</td></tr>		
 <tr><td>Jujuy</td><td>Y</td></tr>		
 <tr><td>La Pampa</td><td>L</td></tr>		

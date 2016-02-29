@@ -7,4 +7,5 @@ Gem::Specification.new do |s|
   s.authors = ["Softtek"]
   s.files = ["lib/todo_pago_conector.rb"]
   s.add_runtime_dependency "savon", ["= 2.8.1"]
+  s.add_runtime_dependency "rest-client", ["= 1.8.0"]
 end
