@@ -1,7 +1,7 @@
 require 'savon'
 require 'rest-client'
 
-$versionTodoPago = '1.1.4'
+$versionTodoPago = '1.1.5'
 
 
 $tenant = 't/1.1/'
@@ -45,9 +45,6 @@ class TodoPagoConector
   end
 
   def self.buildPayload(optionAuthorize)
-    optionAuthorize[:SDK] = "Ruby"
-    optionAuthorize[:SDKVERSION] = $versionTodoPago
-    optionAuthorize[:LENGUAGEVERSION] = "#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}"
     
     @xml = "<Request>"
     optionAuthorize.each do |item|

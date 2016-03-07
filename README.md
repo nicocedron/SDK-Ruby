@@ -116,13 +116,6 @@ optionsSAR_comercio[:URL_OK]="http://someurl.com/ok/"
 optionsSAR_comercio[:URL_ERROR]="http://someurl.com/error/"
 optionsSAR_comercio[:Session]= "ABCDEF-1234-12221-FDE1-00000200"
 
-#Optionals
-optionsSAR_operacion = Hash.new
-optionsSAR_operacion[:AVAILABLEPAYMENTMETHODSIDS]= "1#194#43#45"
-optionsSAR_operacion[:PUSHNOTIFYMETHOD]= ""
-optionsSAR_operacion[:PUSHNOTIFYENDPOINT]= ""  
-optionsSAR_operacion[:PUSHNOTIFYSTATES]= ""
-
 ```		
 
 <ins><strong>Datos propios de la operación</strong></ins>		
