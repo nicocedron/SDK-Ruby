@@ -1,5 +1,10 @@
 
 require "../lib/todo_pago_conector.rb"
+require "../lib/user.rb"
+require "../lib/Exceptions/empty_field_user_exception.rb"
+require "../lib/Exceptions/empty_field_password_exception.rb"
+require "../lib/Exceptions/connection_exception.rb"
+require "../lib/Exceptions/response_exception.rb"
 
 j_header_http = {
     'Authorization'=>'TODOPAGO 1540601877EB2059EF50240E46ABD10E', 'Username'=>'>Test'
@@ -146,4 +151,13 @@ optionsGBRDT[:PAGENUMBER] = 1
 
 response = conector.getByRangeDateTime(optionsGBRDT)
 puts(response)
+puts('------------------------------------------------------------------------------------------------')
+
+
+puts("GET CREDENTIALS")
+#Credentials
+u = User.new("email@ejemplo.com", "password1")
+response = conector.getCredentials(u)
+puts(response.merchant)
+puts(response.apiKey)
 puts('------------------------------------------------------------------------------------------------')

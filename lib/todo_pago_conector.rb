@@ -1,7 +1,7 @@
 require 'savon'
 require 'rest-client'
 
-$versionTodoPago = '1.1.5'
+$versionTodoPago = '1.2.0'
 
 
 $tenant = 't/1.1/'
@@ -143,4 +143,19 @@ class TodoPagoConector
     response= client.call(:return_request, message:message)
     return response.hash
   end
+  ########################################################################
+  ### GETCREDENTIALS######################################################
+  ########################################################################
+  def getCredentials(user)
+    url = $endPoint + $restAppend +"Credentials"
+    response = RestClient.post url, user.getData.to_json, :content_type => :json
+	response = JSON.parse(response)
+	if response['Credentials']['resultado']['codigoResultado'] != 0
+		raise ResponseException.new
+	end
+	user.merchant = response['Credentials']['merchantId']
+	user.apiKey = response['Credentials']['APIKey']
+	return user
+  end
+
 end
