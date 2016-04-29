@@ -1,78 +1,76 @@
 <a name="inicio"></a>		
-sdk-ruby		
-=======		
-		
-Modulo para conexión con gateway de pago Todo Pago		
-		
-######[Instalación](#instalacion)		
-######[Versiones de Ruby soportadas](#Versionesderubysoportadas)
-######[Generalidades](#general)	
-######[Uso](#uso)		
-######[Datos adicionales para prevencion de fraude] (#datosadicionales) 		
-######[Ejemplo](#ejemplo)		
-######[Modo test](#test)
-######[Status de la operación](#status)
-######[Tablas de referencia](#tablas)		
- 		
+Todo Pago - módulo SDK-Ruby para conexión con gateway de pago
+=======
+
+ + [Instalación](#instalacion)
+ 	+ [Creación de la gema TodoPagoConector](#creategem)
+ 	+ [Instalación de la gema TodoPagoConector](#installgem)
+ 	+ [Versiones de Ruby soportadas](#Versionesderubysoportadas)
+ 	+ [Generalidades](#general)
+ + [Uso](#uso)		
+    + [Inicializar la clase correspondiente al conector (TodoPagoConector)](#initconector)
+    + [Solicitud de autorización](#solicitudautorizacion)
+    + [Confirmación de transacción](#confirmatransaccion)
+    + [Ejemplo](#ejemplo)
+    + [Modo test](#test)
+ + [Datos adicionales para prevención de fraude](#datosadicionales) 
+ + [Características](#caracteristicas)
+    + [Status de la operación](#status)
+    + [Consulta de operaciones por rango de tiempo](#statusdate)
+    + [Devolucion](#devolucion)
+    + [Devolucion parcial](#devolucionparcial)
+    + [Formulario hibrido](#formhidrido)
+    + [Obtener Credenciales](#credenciales)
+ + [Diagrama de secuencia](#secuencia)
+ + [Tablas de referencia](#tablareferencia)		
+ + [Tabla de errores](#codigoerrores)		 
+
 <a name="instalacion"></a>		
 ## Instalación		
-Se debe descargar la última versión del SDK desde el botón Download ZIP y descomprimirlo. Se debe crear un archivo .gem que debe ser instalado para poder utilizarlo.
+Se debe descargar la última versión del SDK desde el botón Download ZIP del branch master.
+Se debe crear un archivo .gem que debe ser instalado para poder utilizarlo.
 
-### Creación  e Instalación de la gema TodoPagoConector.gem
+<a name="creategem"></a>   
+### 1. Creación de la gema TodoPagoConector
 Abrir la consola tipear:
 ```
 	cd "ruta-del-sdk"
 ```
 Donde ruta-del-sdk es la ruta donde se descomprimió el zip
 
-#### Crear gem TodoPagoConector
-Situarse en el directorio que contiene el archivo TodoPagoConector.gemspec, de esta forma:
-```
-	cd sdk-ruby-master
-```
 Para crear el archivo .gem se debe ejecutar el comando gem build
-#####
-       ..\sdk-ruby-master>gem build TodoPagoConector.gemspec
-       Successfully built RubyGem
-       Name: TodoPagoConector
-       Version: 1.1.0
-       File: TodoPagoConector-1.1.0.gem
-
-Se debe obtener el archivo TodoPagoConector-1.1.0.gem
-
-#### Instalación de gem TodoPagoConector-1.1.0
-#####
-     sdk-ruby-master>gem install ./TodoPagoConector-1.1.0.gem
-     Successfully installed TodoPagoConector-1.1.0
-     1 gem installed
-     Installing ri documentation for TodoPagoConector-1.1.0...
-     Installing RDoc documentation for TodoPagoConector-1.1.0...
-
-#### Uso del archivo TodoPagoConector-1.1.0.gem
-Abrir el Interactive RuBy shell
 ```
-     ..\sdk-ruby-master>irb
+        gem build TodoPagoConector.gemspec
 ```
 
-Tipear el siguiente comando para comprobar que está listo para ser utilizado
-```
-     irb(main):004:0> require 'todo_pago_conector'
-     => true
-```
-[<sub>Volver a inicio</sub>](#inicio)		
+Se debe obtener el archivo TodoPagoConector.gem
+[<sub>Volver a inicio</sub>](#inicio)	
 
-<a name="Versionesderubysoportadas"></a>
-##Versiones soportadas de Ruby
-La versión implementada de la SDK, esta testeada para versiones de ruby desde 1.9.3 en adelante.
+<a name="installgem"></a>   
+#### 2. Instalación de la gema TodoPagoConector
+```
+        gem install ./TodoPagoConector.gem
+```
+[<sub>Volver a inicio</sub>](#inicio)	
+
+<a name="Versionesdephpsoportadas"></a> 
+
+#### 3. Versiones de Ruby soportadas    
+La versión implementada de la SDK, esta testeada para versiones de Ruby desde 1.9.3 en adelante.
 [<sub>Volver a inicio</sub>](#inicio)
 
 <a name="general"></a>
-##Genaralidades
+#### 4. Generalidades
 Esta versión soporta únicamente pago en moneda nacional argentina (CURRENCYCODE = 32).
-[<sub>Volver a inicio</sub>](#inicio)
+
+[<sub>Volver a inicio</sub>](#inicio)	
+<br>
 <a name="uso"></a>		
 ## Uso		
-####1. Inicializar la clase correspondiente al conector (TodoPago).
+
+<a name="initconector"></a>
+####Inicializar la clase correspondiente al conector (TodoPagoConector).
+
 - crear una estrucura como la del ejemplo con las wsdl suministradas por Todo Pago
 
 ```ruby
@@ -97,16 +95,18 @@ end_point = 'https://developers.todopago.com.ar/'
 conector = TodoPagoConector.new(j_header_http,
                                 j_wsdls,
                                 end_point) # End Point, wsdl y http_header provisto por TODO PAGO   
-```		
-		
-####2.Solicitud de autorización		
+```				
+
+<a name="solicitudautorizacion"></a>
+####Solicitud de autorización		
 En este caso hay que llamar a sendAuthorizeRequest(). 		
 ```ruby		
 response = conector.sendAuthorizeRequest(optionsSAR_comercio,optionsSAR_operacion)
-```		
+```				
 <ins><strong>Datos propios del comercio</strong></ins>		
 optionsSAR_comercio debe ser un Hash con la siguiente estructura:		
-		
+<a name="url_ok"></a>
+<a name="url_error"></a>
 ```ruby
 optionsSAR_comercio = Hash.new
 optionsSAR_comercio[:Security]="f3d8b72c94ab4a06be2ef7c95490f7d3"
@@ -128,9 +128,12 @@ optionsSAR_operacion[:OPERATIONID] = "8000"
 optionsSAR_operacion[:CURRENCYCODE] = "032"
 optionsSAR_operacion[:AMOUNT] = "1.00"
 ```		
-La variable response contendrá una estuctura en la cual <strong>url_request</strong> nos dara la url del formulario de pago a la cual habra que redirigir al comprador y <strong>request_key</strong> será un datos que será requerido en el paso de la confirmación de la transacción a través del método <strong>getAuthorizeAnswer</strong>
-####3.Confirmación de transacción.		
-En este caso hay que llamar a getAuthorizeAnswer(), enviando como parámetro un Hash como se describe a continuación.		
+
+La variable response contendrá una estuctura en la cual **url_request** es donde está hosteado el formulario de pago y donde hay que redireccionar al usuario, una vez realizado el pago según el éxito o fracaso del mismo, el formulario redireccionará a una de las 2 URLs seteadas en **optionsSAR_comercio** ([URL_OK](#url_ok), en caso de éxito o [URL_ERROR](#url_error), en caso de que por algún motivo el formulario rechace el pago)
+
+<a name="confirmatransaccion"></a>
+####Confirmación de transacción.		
+En este caso hay que llamar a **getAuthorizeAnswer()**, enviando como parámetro un Hash como se describe a continuación.		
 ```ruby
 optionsAnwser=Hash.new
 optionsAnwser[:Security]= "f3d8b72c94ab4a06be2ef7c95490f7d3" #Token de seguridad, provisto por TODO PAGO. MANDATORIO.
@@ -140,11 +143,37 @@ optionsAnwser[:AnswerKey]= "693ca9cc-c940-06a4-8d96-1ab0d66f3ee6"  #Valor que fi
 
 response = conector.getAuthorizeAnswer(optionsAnwser)
 ```		
-[<sub>Volver a inicio</sub>](#inicio)		
+
+Se deben guardar y recuperar los valores de los campos <strong>RequestKey</strong> y <strong>AnswerKey</strong>.
+
+El parámetro <strong>RequestKey</strong> es siempre distinto y debe ser persistido de alguna forma cuando el comprador es redirigido al formulario de pagos.
+
+<ins><strong>Importante</strong></ins> El campo **AnswerKey** se adiciona  en la redirección que se realiza a alguna de las direcciones ( URL ) epecificadas en el  servicio **SendAurhorizationRequest**, esto sucede cuando la transacción ya fue resuelta y es necesario regresar al site para finalizar la transacción de pago.		
+
+<a name="ejemplo"></a>      
+####Ejemplo
+Existe un ejemplo en la carpeta https://github.com/TodoPago/sdk-ruby/blob/master/TodoPago/test.rb el cual tiene configurados estos valores, y muestra los resultados de los métodos principales del SDK.
+[<sub>Volver a inicio</sub>](#inicio)
+
+<a name="test"></a>      
+####Modo Test
+
+El SDK-RUBY permite trabajar con los ambiente de desarrollo y de produccion de Todo Pago.<br>
+
+Para utlilizar el modo test se debe pasar un end point de prueba (provisto por TODO PAGO).
+```ruby
+conector_test = TodoPagoConector.new(j_header_http_test, j_wsdls_test, end_point_test)
+ ```
+
+[<sub>Volver a inicio</sub>](#inicio)
+<br>
 
 <a name="datosadicionales"></a>		
-## Datos adicionales para control de fraude
-##### Parámetros Adicionales en el post inicial:		
+## Datos adicionales para control de fraude		
+Los datos adicionales para control de fraude son **obligatorios**, de lo contrario baja el score de la transacción.
+
+Los campos marcados como **condicionales** afectan al score negativamente si no son enviados, pero no son mandatorios o bloqueantes.
+
 ```ruby		
 optionsSAR_operacion=Hash.new 		
 ...........................................................................		
@@ -193,24 +222,16 @@ optionsSAR_operacion[:CSITTOTALAMOUNT]="10.01" #CSITTOTALAMOUNT=CSITUNITPRICE*CS
 optionsSAR_operacion[:CSITQUANTITY]="1" #Cantidad del producto. CONDICIONAL.		
 optionsSAR_operacion[:CSITUNITPRICE]="10.01" #Formato Idem CSITTOTALAMOUNT. CONDICIONAL.		
 ...........................................................		
-```		
-
-## Ejemplo		          
-Existe un ejemplo en la carpeta https://github.com/TodoPago/sdk-ruby/blob/master/TodoPago/test.rb el cual tiene configurados estos valores, y muestra los resultados de los métodos principales del SDK.
-Existe un segundo ejemplo con interfaz grafica, para facil configuracion y prueba en https://github.com/TodoPago/sdk-ruby/blob/master/EjemploUI/main.py (el ejemplo esta hecho en PY pero ejecuta el codigo Ruby por detras)
+```				
 
 [<sub>Volver a inicio</sub>](#inicio)
+<br>
 
-<a name="test"></a>
-##Modo test
-Para utlilizar el modo test se debe pasar un end point de prueba (provisto por TODO PAGO).
-```ruby
-conector_test = TodoPagoConector.new(j_header_http_test, j_wsdls_test, end_point_test)
- ```
-[<sub>Volver a inicio</sub>](#inicio)
+<a name="caracteristicas"></a>
+## Características
 
 <a name="status"></a>
-##Status de la Operación
+####Status de la Operación
 La SDK cuenta con un método para consultar el status de la transacción desde la misma SDK. El método se utiliza de la siguiente manera:
 ```ruby
 optionsOperations=Hash.new
@@ -218,12 +239,14 @@ optionsOperations[:MERCHANT]= merchant #merchant es una variable
 optionsOperations[:OPERATIONID]= operationid #operationid es una variable (id de la opereacion)
 conector.getOperations(optionsOperations)
 ```
-[<sub>Volver a inicio</sub>](#inicio)
 
-<a name="GBRDT"></a>
-##Consulta de operaciones por rango de tiempo.
-En este caso hay que llamar a getByRangeDateTime() y devolvera todas las operaciones realizadas en el rango de fechas dado
-```python
+Además, se puede conocer el estado de las transacciones a través del portal [www.todopago.com.ar](http://www.todopago.com.ar/). Desde el portal se verán los estados "Aprobada" y "Rechazada". Si el método de pago elegido por el comprador fue Pago Fácil o RapiPago, se podrán ver en estado "Pendiente" hasta que el mismo sea pagado.
+	
+<a name="statusdate"></a>
+####Consulta de operaciones por rango de tiempo
+En este caso hay que llamar a **getByRangeDateTime()** y devolvera todas las operaciones realizadas en el rango de fechas dado
+
+```ruby
 optionsGBRDT=Hash.new
 optionsGBRDT[:Merchant]= "2866"
 optionsGBRDT[:STARTDATE]= "2016-01-01"
@@ -231,17 +254,12 @@ optionsGBRDT[:ENDDATE]= "2016-02-19"
 optionsGBRDT[:PAGENUMBER] = "1"
 
 response = tpc.getByRangeDateTime(optionsGBRDT)
+```	
 
-```
-[<sub>Volver a inicio</sub>](#inicio)
+<a name="devolucion"></a>
+####Devolución
 
-
-<a name="devoluciones"></a>
-## Anulaciones y Devoluciones
-
-La SDK dispone de métodos para realizar la anulación o la devolución online, total o parcial, de una transacción realizada a traves de TodoPago.
-
-#### Anulaciones
+La SDK dispone de métodos para realizar la devolución, de una transacción realizada a traves de TodoPago.
 
 Se debe llamar al método ```voidRequest``` de la siguiente manera:
 ```ruby
@@ -265,7 +283,18 @@ options[:AuthorizationKey] = "6d2589f2-37e6-1334-7565-3dc19404480c" #Authorizati
 resp = tpc.voidRequest(options)	
 ```
 
-#### Devoluciones
+**Respuesta del servicio:**
+Si la operación fue realizada correctamente se informará con un código 2011 y un mensaje indicando el éxito de la operación.
+
+``` ruby
+{:envelope=>{:body=>{:return_response=>{:status_code=>"2011", :status_message=>"TX OK", :authorization_key=>"318974f2-4866-d8e7-9622-9ac21aec0df2", :authorizationcode=>"2011", :"@xmlns:api"=>"http://api.todopago.com.ar"}}, :"@xmlns:soapenv"=>"http://schemas.xmlsoap.org/soap/envelope/"}}
+```
+<br>
+
+<a name="devolucionparcial"></a>
+####Devolución parcial
+
+La SDK dispone de métodos para realizar la devolución parcial, de una transacción realizada a traves de TodoPago.
 
 Se debe llamar al método ```returnRequest``` de la siguiente manera:
 ```ruby
@@ -292,57 +321,135 @@ options[:AMOUNT] = "1.00" #Opcional. Monto a devolver, si no se envía, se trata
 resp = tpc.returnRequest(options)	
 ```
 
-#### Respuesta de los servicios
-
+**Respuesta de servicio:**
 Si la operación fue realizada correctamente se informará con un código 2011 y un mensaje indicando el éxito de la operación.
 
 ``` ruby
 {:envelope=>{:body=>{:return_response=>{:status_code=>"2011", :status_message=>"TX OK", :authorization_key=>"318974f2-4866-d8e7-9622-9ac21aec0df2", :authorizationcode=>"2011", :"@xmlns:api"=>"http://api.todopago.com.ar"}}, :"@xmlns:soapenv"=>"http://schemas.xmlsoap.org/soap/envelope/"}}
 ```
-<a name="tablas"></a>
-## Tablas de Referencia		
-######[Códigos de Estado](#cde)		
-######[Provincias](#p)		
-<a name="cde"></a>		
-<p>Codigos de Estado</p>		
-<table>		
-<tr><th>IdEstado</th><th>Descripción</th></tr>		
-<tr><td>1</td><td>Ingresada</td></tr>		
-<tr><td>2</td><td>A procesar</td></tr>		
-<tr><td>3</td><td>Procesada</td></tr>		
-<tr><td>4</td><td>Autorizada</td></tr>		
-<tr><td>5</td><td>Rechazada</td></tr>		
-<tr><td>6</td><td>Acreditada</td></tr>		
-<tr><td>7</td><td>Anulada</td></tr>		
-<tr><td>8</td><td>Anulación Confirmada</td></tr>		
-<tr><td>9</td><td>Devuelta</td></tr>		
-<tr><td>10</td><td>Devolución Confirmada</td></tr>		
-<tr><td>11</td><td>Pre autorizada</td></tr>		
-<tr><td>12</td><td>Vencida</td></tr>		
-<tr><td>13</td><td>Acreditación no cerrada</td></tr>		
-<tr><td>14</td><td>Autorizada *</td></tr>		
-<tr><td>15</td><td>A reversar</td></tr>		
-<tr><td>16</td><td>A registar en Visa</td></tr>		
-<tr><td>17</td><td>Validación iniciada en Visa</td></tr>		
-<tr><td>18</td><td>Enviada a validar en Visa</td></tr>		
-<tr><td>19</td><td>Validada OK en Visa</td></tr>		
-<tr><td>20</td><td>Recibido desde Visa</td></tr>		
-<tr><td>21</td><td>Validada no OK en Visa</td></tr>		
-<tr><td>22</td><td>Factura generada</td></tr>		
-<tr><td>23</td><td>Factura no generada</td></tr>		
-<tr><td>24</td><td>Rechazada no autenticada</td></tr>		
-<tr><td>25</td><td>Rechazada datos inválidos</td></tr>		
-<tr><td>28</td><td>A registrar en IdValidador</td></tr>		
-<tr><td>29</td><td>Enviada a IdValidador</td></tr>		
-<tr><td>32</td><td>Rechazada no validada</td></tr>		
-<tr><td>38</td><td>Timeout de compra</td></tr>		
-<tr><td>50</td><td>Ingresada Distribuida</td></tr>		
-<tr><td>51</td><td>Rechazada por grupo</td></tr>		
-<tr><td>52</td><td>Anulada por grupo</td></tr>		
-</table>		
-		
-<a name="p"></a>		
-<p>Provincias</p>
+<br>
+<a name="formhidrido"></a>
+####Formulario hibrido
+
+**Conceptos basicos**<br>
+El formulario hibrido, es una alternativa al medio de pago actual por redirección al formulario externo de TodoPago.<br> 
+Con el mismo, se busca que el comercio pueda adecuar el look and feel del formulario a su propio diseño.
+
+**Libreria**<br>
+El formulario requiere incluir en la pagina una libreria Javascript de TodoPago.<br>
+El endpoint depende del entorno:
++ Desarrollo: https://developers.todopago.com.ar/resources/TPHybridForm-v0.1.js
++ Produccion: https://forms.todopago.com.ar/resources/TPHybridForm-v0.1.js
+
+**Restricciones y libertades en la implementación**
+
++ Ninguno de los campos del formulario podrá contar con el atributo name.
++ Se deberá proveer de manera obligatoria un botón para gestionar el pago con Billetera Todo Pago.
++ Todos los elementos de tipo <option> son completados por la API de Todo Pago.
++ Los campos tienen un id por defecto. Si se prefiere utilizar otros ids se deberán especificar los
+mismos cuando se inicialice el script de Todo Pago.
++ Pueden aplicarse todos los detalles visuales que se crean necesarios, la API de Todo Pago no
+altera los atributos class y style.
++ Puede utilizarse la API para setear los atributos placeholder del formulario, para ello deberá
+especificar dichos placeholders en la inicialización del formulario "window.TPFORMAPI.hybridForm.setItem". En caso de que no se especifiquen los placeholders se usarán los valores por defecto de la API.
+
+**HTML del formulario**
+
+El formulario implementado debe contar al menos con los siguientes campos.
+
+```html
+<body>
+	<select id="formaDePagoCbx"></select>
+	<select id="bancoCbx"></select>
+	<select id="promosCbx"></select>
+	<label id="labelPromotionTextId"></label>
+	<input id="numeroTarjetaTxt"/>
+	<input id="mesTxt"/>
+	<input id="anioTxt"/>
+	<input id="codigoSeguridadTxt"/>
+	<label id="labelCodSegTextId"></label>
+	<input id="apynTxt"/>
+	<select id="tipoDocCbx"></select>
+	<input id="nroDocTxt"/>
+	<input id="emailTxt"/><br/>
+	<button id="MY_btnConfirmarPago"/>
+</body>
+```
+
+**Inizialización y parametros requeridos**<br>
+Para inicializar el formulario se usa window.TPFORMAPI.hybridForm.initForm. El cual permite setear los elementos y ids requeridos.
+
+Para inicializar un ítem de pago, es necesario llamar a window.TPFORMAPI.hybridForm.setItem. Este requiere obligatoriamente el parametro publicKey que corresponde al PublicRequestKey (entregado por el SAR).
+Se sugiere agregar los parametros usuario, e-mail, tipo de documento y numero.
+
+**Javascript**
+```js
+window.TPFORMAPI.hybridForm.initForm({
+    callbackValidationErrorFunction: 'validationCollector',
+	callbackCustomSuccessFunction: 'customPaymentSuccessResponse',
+	callbackCustomErrorFunction: 'customPaymentErrorResponse',
+	botonPagarId: 'MY_btnConfirmarPago',
+	modalCssClass: 'modal-class',
+	modalContentCssClass: 'modal-content',
+	beforeRequest: 'initLoading',
+	afterRequest: 'stopLoading'
+});
+
+window.TPFORMAPI.hybridForm.setItem({
+    publicKey: 'taf08222e-7b32-63d4-d0a6-5cabedrb5782', //obligatorio
+    defaultNombreApellido: 'Usuario',
+    defaultNumeroDoc: 20234211,
+    defaultMail: 'todopago@mail.com',
+    defaultTipoDoc: 'DNI'
+});
+
+//callbacks de respuesta del pago
+function validationCollector(parametros) {
+}
+function customPaymentSuccessResponse(response) {
+}
+function customPaymentErrorResponse(response) {
+}
+function initLoading() {
+}
+function stopLoading() {
+}
+```
+
+**Callbacks**<br>
+El formulario define callbacks javascript, que son llamados según el estado y la informacion del pago realizado:
++ customPaymentSuccessResponse: Devuelve response si el pago se realizo correctamente.
++ customPaymentErrorResponse: Si hubo algun error durante el proceso de pago, este devuelve el response con el codigo y mensaje correspondiente.
+
+[<sub>Volver a inicio</sub>](#inicio)
+
+<a name="credenciales"></a>
+####Obtener credenciales
+El SDK permite obtener las credenciales "Authentification", "MerchandId" y "Security" de la cuenta de Todo Pago, ingresando el usuario y contraseña.<br>
+Esta funcionalidad es util para obtener los parametros de configuracion dentro de la implementacion.
+	
+- Crear una instancia de la clase User:
+```ruby
+u = User.new("email@ejemplo.com", "password1")
+response = conector.getCredentials(u)
+```
+
+**Observación**: El Security se obtiene a partir de apiKey, eliminando TODOPAGO de este ultimo.
+
+[<sub>Volver a inicio</sub>](#inicio)
+<br>
+
+<a name="secuencia"></a>
+##Diagrama de secuencia
+![imagen de configuracion](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/secuencia-page-001.jpg)
+
+[<sub>Volver a inicio</sub>](#inicio)
+<br>
+
+<a name="tablareferencia"></a>    
+## Tablas de Referencia   
+######[Provincias](#p)    
+				
 <p>Solo utilizado para incluir los datos de control de fraude</p>
 <table>		
 <tr><th>Provincia</th><th>Código</th></tr>		
@@ -370,5 +477,64 @@ Si la operación fue realizada correctamente se informará con un código 2011 y
 <tr><td>Santiago del Estero</td><td>G</td></tr>		
 <tr><td>Tierra del Fuego</td><td>V</td></tr>		
 <tr><td>Tucumán</td><td>T</td></tr>		
-</table>		
+</table>
+
 [<sub>Volver a inicio</sub>](#inicio)
+
+<a name="codigoerrores"></a>    
+## Tabla de errores     
+
+<table>		
+<tr><th>Id mensaje</th><th>Mensaje</th></tr>				
+<tr><td>-1</td><td>Aprobada.</td></tr>
+<tr><td>1081</td><td>Tu saldo es insuficiente para realizar la transacción.</td></tr>
+<tr><td>1100</td><td>El monto ingresado es menor al mínimo permitido</td></tr>
+<tr><td>1101</td><td>El monto ingresado supera el máximo permitido.</td></tr>
+<tr><td>1102</td><td>La tarjeta ingresada no corresponde al Banco indicado. Revisalo.</td></tr>
+<tr><td>1104</td><td>El precio ingresado supera al máximo permitido.</td></tr>
+<tr><td>1105</td><td>El precio ingresado es menor al mínimo permitido.</td></tr>
+<tr><td>2010</td><td>En este momento la operación no pudo ser realizada. Por favor intentá más tarde. Volver a Resumen.</td></tr>
+<tr><td>2031</td><td>En este momento la validación no pudo ser realizada, por favor intentá más tarde.</td></tr>
+<tr><td>2050</td><td>Lo sentimos, el botón de pago ya no está disponible. Comunicate con tu vendedor.</td></tr>
+<tr><td>2051</td><td>La operación no pudo ser procesada. Por favor, comunicate con tu vendedor.</td></tr>
+<tr><td>2052</td><td>La operación no pudo ser procesada. Por favor, comunicate con tu vendedor.</td></tr>
+<tr><td>2053</td><td>La operación no pudo ser procesada. Por favor, intentá más tarde. Si el problema persiste comunicate con tu vendedor</td></tr>
+<tr><td>2054</td><td>Lo sentimos, el producto que querés comprar se encuentra agotado por el momento. Por favor contactate con tu vendedor.</td></tr>
+<tr><td>2056</td><td>La operación no pudo ser procesada. Por favor intentá más tarde.</td></tr>
+<tr><td>2057</td><td>La operación no pudo ser procesada. Por favor intentá más tarde.</td></tr>
+<tr><td>2059</td><td>La operación no pudo ser procesada. Por favor intentá más tarde.</td></tr>
+<tr><td>90000</td><td>La cuenta destino de los fondos es inválida. Verificá la información ingresada en Mi Perfil.</td></tr>
+<tr><td>90001</td><td>La cuenta ingresada no pertenece al CUIT/ CUIL registrado.</td></tr>
+<tr><td>90002</td><td>No pudimos validar tu CUIT/CUIL.  Comunicate con nosotros <a href="#contacto" target="_blank">acá</a> para más información.</td></tr>
+<tr><td>99900</td><td>El pago fue realizado exitosamente</td></tr>
+<tr><td>99901</td><td>No hemos encontrado tarjetas vinculadas a tu Billetera. Podés  adherir medios de pago desde www.todopago.com.ar</td></tr>
+<tr><td>99902</td><td>No se encontro el medio de pago seleccionado</td></tr>
+<tr><td>99903</td><td>Lo sentimos, hubo un error al procesar la operación. Por favor reintentá más tarde.</td></tr>
+<tr><td>99970</td><td>Lo sentimos, no pudimos procesar la operación. Por favor reintentá más tarde.</td></tr>
+<tr><td>99971</td><td>Lo sentimos, no pudimos procesar la operación. Por favor reintentá más tarde.</td></tr>
+<tr><td>99977</td><td>Lo sentimos, no pudimos procesar la operación. Por favor reintentá más tarde.</td></tr>
+<tr><td>99978</td><td>Lo sentimos, no pudimos procesar la operación. Por favor reintentá más tarde.</td></tr>
+<tr><td>99979</td><td>Lo sentimos, el pago no pudo ser procesado.</td></tr>
+<tr><td>99980</td><td>Ya realizaste un pago en este sitio por el mismo importe. Si querés realizarlo nuevamente esperá 5 minutos.</td></tr>
+<tr><td>99982</td><td>En este momento la operación no puede ser realizada. Por favor intentá más tarde.</td></tr>
+<tr><td>99983</td><td>Lo sentimos, el medio de pago no permite la cantidad de cuotas ingresadas. Por favor intentá más tarde.</td></tr>
+<tr><td>99984</td><td>Lo sentimos, el medio de pago seleccionado no opera en cuotas.</td></tr>
+<tr><td>99985</td><td>Lo sentimos, el pago no pudo ser procesado.</td></tr>
+<tr><td>99986</td><td>Lo sentimos, en este momento la operación no puede ser realizada. Por favor intentá más tarde.</td></tr>
+<tr><td>99987</td><td>Lo sentimos, en este momento la operación no puede ser realizada. Por favor intentá más tarde.</td></tr>
+<tr><td>99988</td><td>Lo sentimos, momentaneamente el medio de pago no se encuentra disponible. Por favor intentá más tarde.</td></tr>
+<tr><td>99989</td><td>La tarjeta ingresada no está habilitada. Comunicate con la entidad emisora de la tarjeta para verificar el incoveniente.</td></tr>
+<tr><td>99990</td><td>La tarjeta ingresada está vencida. Por favor seleccioná otra tarjeta o actualizá los datos.</td></tr>
+<tr><td>99991</td><td>Los datos informados son incorrectos. Por favor ingresalos nuevamente.</td></tr>
+<tr><td>99992</td><td>La fecha de vencimiento es incorrecta. Por favor seleccioná otro medio de pago o actualizá los datos.</td></tr>
+<tr><td>99993</td><td>La tarjeta ingresada no está vigente. Por favor seleccioná otra tarjeta o actualizá los datos.</td></tr>
+<tr><td>99994</td><td>El saldo de tu tarjeta no te permite realizar esta operacion.</td></tr>
+<tr><td>99995</td><td>La tarjeta ingresada es invalida. Seleccioná otra tarjeta para realizar el pago.</td></tr>
+<tr><td>99996</td><td>La operación fué rechazada por el medio de pago porque el monto ingresado es inválido.</td></tr>
+<tr><td>99997</td><td>Lo sentimos, en este momento la operación no puede ser realizada. Por favor intentá más tarde.</td></tr>
+<tr><td>99998</td><td>Lo sentimos, la operación fue rechazada. Comunicate con la entidad emisora de la tarjeta para verificar el incoveniente o seleccioná otro medio de pago.</td></tr>
+<tr><td>99999</td><td>Lo sentimos, la operación no pudo completarse. Comunicate con la entidad emisora de la tarjeta para verificar el incoveniente o seleccioná otro medio de pago.</td></tr>
+</table>
+
+[<sub>Volver a inicio</sub>](#inicio)
+
