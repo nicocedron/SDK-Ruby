@@ -50,6 +50,7 @@ Se debe obtener el archivo TodoPagoConector.gem
 #### 2. Instalación de la gema TodoPagoConector
 ```
         gem install ./TodoPagoConector.gem
+        gem install json
 ```
 [<sub>Volver a inicio</sub>](#inicio)	
 
@@ -115,7 +116,6 @@ optionsSAR_comercio[:EncodingMethod]="XML"
 optionsSAR_comercio[:URL_OK]="http://someurl.com/ok/"
 optionsSAR_comercio[:URL_ERROR]="http://someurl.com/error/"
 optionsSAR_comercio[:Session]= "ABCDEF-1234-12221-FDE1-00000200"
-
 ```		
 
 <ins><strong>Datos propios de la operación</strong></ins>		
@@ -127,7 +127,7 @@ optionsSAR_operacion[:MERCHANT] = "2153"
 optionsSAR_operacion[:OPERATIONID] = "8000"
 optionsSAR_operacion[:CURRENCYCODE] = "032"
 optionsSAR_operacion[:AMOUNT] = "1.00"
-```		
+```
 
 La variable response contendrá una estuctura en la cual **url_request** es donde está hosteado el formulario de pago y donde hay que redireccionar al usuario, una vez realizado el pago según el éxito o fracaso del mismo, el formulario redireccionará a una de las 2 URLs seteadas en **optionsSAR_comercio** ([URL_OK](#url_ok), en caso de éxito o [URL_ERROR](#url_error), en caso de que por algún motivo el formulario rechace el pago)
 

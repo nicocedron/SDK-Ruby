@@ -30,7 +30,7 @@ except ImportError:
 
 
 #TextAreas - Test
-global TgsAnswer, TgaaAnswer, TsarAnswer, TgapmAnswer
+global TgsAnswer, TgaaAnswer, TsarAnswer, TgapmAnswer, Text_DiscoverPMAnswer
 
 global lang
 lang = 'Ruby'
@@ -131,7 +131,19 @@ def set_Tk_var():
 
     global gapmMerchant
     gapmMerchant = StringVar()
+    
+    #optionals
+    global che_AVAILABLEPAYMENTMETHODSIDS, che_PushNotifyMethod, che_PushNotifyEndpoint, che_PushNotifyStates
+    che_AVAILABLEPAYMENTMETHODSIDS = StringVar()
+    che_PushNotifyMethod = StringVar()
+    che_PushNotifyEndpoint = StringVar()
+    che_PushNotifyStates = StringVar()
 
+    global AVAILABLEPAYMENTMETHODSIDS, PushNotifyMethod, PushNotifyEndpoint, PushNotifyStates
+    AVAILABLEPAYMENTMETHODSIDS = StringVar()
+    PushNotifyMethod = StringVar()
+    PushNotifyEndpoint = StringVar()
+    PushNotifyStates = StringVar()
 
 ####################################################################################################################################
 #################################################         VALUES         ###########################################################
@@ -145,7 +157,7 @@ def InitConfigurationValues():
 def InitSendAuthorizeRequestValues():
     #SendAuthorizeRequest
     sarSession.set('ABCDEF-1234-12221-FDE1-00000200')
-    sarSecurity.set('1234567890ABCDEF1234567890ABCDEF')
+    sarSecurity.set('f3d8b72c94ab4a06be2ef7c95490f7d3')
     sarEncodingMethod.set('XML')
     sarMerchant.set('2153')
     sarOperationId.set('8000')
@@ -154,14 +166,22 @@ def InitSendAuthorizeRequestValues():
     sarURL_OK.set('http://someurl.com/ok')
     sarURL_ERROR.set('http://someurl.com/error')
     sarEmailCliente.set('some@someurl.com')
+    
+    #optionals
+    che_AVAILABLEPAYMENTMETHODSIDS.set('0')
+    che_PushNotifyMethod.set('0')
+    che_PushNotifyEndpoint.set('0')
+    che_PushNotifyStates.set('0')
+    AVAILABLEPAYMENTMETHODSIDS.set('1#194#43#45')
+
 
 def InitFraudControlValues():
     #fraud control
     CSBTCITY.set('Villa General Belgrano')
     CSBTEMAIL.set('some@someurl.com')
-    CSBTFIRSTNAME.set('Cosme')
+    CSBTFIRSTNAME.set('Juan')
     CSBTPOSTALCODE.set('1010')
-    CSBTSTREET1.set('Some 10')
+    CSBTSTREET1.set('Some Street 2153')
     CSBTIPADDRESS.set('192.0.0.4')
     CSPTGRANDTOTALAMOUNT.set('10.01')
     CSMDD6.set('')
@@ -169,7 +189,7 @@ def InitFraudControlValues():
     CSMDD10.set('')
     CSBTCOUNTRY.set('AR')
     CSBTPHONENUMBER.set('541160913988')
-    CSBTLASTNAME.set('Fulanito')
+    CSBTLASTNAME.set('Perez')
     CSBTSTATE.set('B')
     CSBTSTREET2.set('')
     CSBTCUSTOMERID.set('453458')
@@ -182,19 +202,19 @@ def InitFraudControlValues():
     #isRetail.set(value)
     CSSTCITY.set('Villa General Belgrano')
     CSSTEMAIL.set('some@someurl.com')
-    CSSTFIRSTNAME.set('Cosme')
+    CSSTFIRSTNAME.set('Jose')
     CSSTPOSTALCODE.set('1010')
-    CSSTSTREET1.set('Some 10')
+    CSSTSTREET1.set('Some Street 2153')
     CSSTCOUNTRY.set('AR')
     CSSTPHONENUMBER.set('541160913988')
-    CSSTLASTNAME.set('Fulanito')
+    CSSTLASTNAME.set('Perez')
     CSSTSTATE.set('B')
     CSSTSTREET2.set('')
     CSITPRODUCTCODE.set('electronic_good')
-    CSITPRODUCTNAME.set('Python Test')
+    CSITPRODUCTNAME.set('TestPrd')
     CSITTOTALAMOUNT.set('10.01')
     CSITUNITPRICE.set('10.01')
-    CSITPRODUCTDESCRIPTION.set('Python SDK Test Purchase')
+    CSITPRODUCTDESCRIPTION.set('Test Prd Description')
     CSITPRODUCTSKU.set('SKU1234')
     CSITQUANTITY.set('1')
     CSMDD12.set('')
@@ -205,7 +225,7 @@ def InitFraudControlValues():
 
 def InitGetAuthorizeAnswerValues():
     #GetAuthorize Answer
-    gaaSecurity.set('1234567890ABCDEF1234567890ABCDEF')
+    gaaSecurity.set('f3d8b72c94ab4a06be2ef7c95490f7d3')
     gaaMerchant.set('2153')
     gaaRequestKey.set('710268a7-7688-c8bf-68c9-430107e6b9da')
     gaaAnswerKey.set('693ca9cc-c940-06a4-8d96-1ab0d66f3ee6')
@@ -272,14 +292,30 @@ def getStatusCommand():
 def sendAuthorizeRequestCommand():
     print('--------------------------SAR--------------------------')
     method = 'sar.rb'
-    out = check_output(['ruby',  method, configAuthorization.get(), configAuthorizationWSDL.get(), configEndpoint.get(), sarMerchant.get(), sarEncodingMethod.get(), sarSecurity.get(), sarURL_OK.get(), sarURL_ERROR.get(), sarEmailCliente.get(), sarSession.get(), sarMerchant.get(), sarOperationId.get(), sarCurrencyCode.get(), sarAmount.get(), CSBTCITY.get(), CSBTEMAIL.get(), CSBTFIRSTNAME.get(), CSBTPOSTALCODE.get(), CSBTSTREET1.get(), CSBTIPADDRESS.get(), CSPTGRANDTOTALAMOUNT.get(), CSMDD6.get(), CSMDD8.get(), CSMDD10.get(), CSBTCOUNTRY.get(), CSBTPHONENUMBER.get(), CSBTLASTNAME.get(), CSBTSTATE.get(), CSBTSTREET2.get(), CSBTCUSTOMERID.get(), CSPTCURRENCY.get(), CSMDD7.get(), CSMDD9.get(), CSMDD11.get(), CSSTCITY.get(), CSSTEMAIL.get(), CSSTFIRSTNAME.get(), CSSTPOSTALCODE.get(), CSSTSTREET1.get(), CSSTCOUNTRY.get(), CSSTPHONENUMBER.get(), CSSTLASTNAME.get(), CSSTSTATE.get(), CSSTSTREET2.get(), CSITPRODUCTCODE.get(), CSITPRODUCTNAME.get(), CSITTOTALAMOUNT.get(), CSITUNITPRICE.get(), CSITPRODUCTDESCRIPTION.get(), CSITPRODUCTSKU.get(), CSITQUANTITY.get(), CSMDD12.get(), CSMDD14.get(), CSMDD16.get(), CSMDD13.get(), CSMDD15.get()])
+    out = check_output(['ruby',  method, configAuthorization.get(), configAuthorizationWSDL.get(), configEndpoint.get(), sarMerchant.get(), sarEncodingMethod.get(), sarSecurity.get(), sarURL_OK.get(), sarURL_ERROR.get(), sarEmailCliente.get(), sarSession.get(), sarMerchant.get(), sarOperationId.get(), sarCurrencyCode.get(), sarAmount.get(), CSBTCITY.get(), CSBTEMAIL.get(), CSBTFIRSTNAME.get(), CSBTPOSTALCODE.get(), CSBTSTREET1.get(), CSBTIPADDRESS.get(), CSPTGRANDTOTALAMOUNT.get(), CSMDD6.get(), CSMDD8.get(), CSMDD10.get(), CSBTCOUNTRY.get(), CSBTPHONENUMBER.get(), CSBTLASTNAME.get(), CSBTSTATE.get(), CSBTSTREET2.get(), CSBTCUSTOMERID.get(), CSPTCURRENCY.get(), CSMDD7.get(), CSMDD9.get(), CSMDD11.get(), CSSTCITY.get(), CSSTEMAIL.get(), CSSTFIRSTNAME.get(), CSSTPOSTALCODE.get(), CSSTSTREET1.get(), CSSTCOUNTRY.get(), CSSTPHONENUMBER.get(), CSSTLASTNAME.get(), CSSTSTATE.get(), CSSTSTREET2.get(), CSITPRODUCTCODE.get(), CSITPRODUCTNAME.get(), CSITTOTALAMOUNT.get(), CSITUNITPRICE.get(), CSITPRODUCTDESCRIPTION.get(), CSITPRODUCTSKU.get(), CSITQUANTITY.get(), CSMDD12.get(), CSMDD14.get(), CSMDD16.get(), CSMDD13.get(), CSMDD15.get(), che_AVAILABLEPAYMENTMETHODSIDS.get(), AVAILABLEPAYMENTMETHODSIDS.get(), che_PushNotifyMethod.get(), PushNotifyMethod.get(), che_PushNotifyEndpoint.get(), PushNotifyEndpoint.get(), che_PushNotifyStates.get(), PushNotifyStates.get()])
     print out
     
     TsarAnswer.configure(state=NORMAL)
     TsarAnswer.delete(1.0, END)
     TsarAnswer.insert(END, out)
     TsarAnswer.configure(state=DISABLED)
+
+
+
+def discoverPaymentMethodsCommand():
+    print('--------------------------DPM--------------------------')
     
+    method = 'dpm.rb'
+    out = check_output(['ruby',  method, configAuthorization.get(), configAuthorizationWSDL.get(), configEndpoint.get()])
+    print out
+    
+    Text_DiscoverPMAnswer.configure(state=NORMAL)
+    Text_DiscoverPMAnswer.delete(1.0, END)
+    Text_DiscoverPMAnswer.insert(END, out)
+    Text_DiscoverPMAnswer.configure(state=DISABLED)
+
+    
+
 
 ####################################################################################################################################
 #####################################################        INIT         ##########################################################

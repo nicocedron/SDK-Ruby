@@ -98,6 +98,10 @@ class New_Toplevel_1:
         self.TNotebook1_pg4 = ttk.Frame(self.TNotebook1)
         self.TNotebook1.add(self.TNotebook1_pg4, padding=3)
         self.TNotebook1.tab(4, text="GetAllPaymentMethods",underline="-1",)
+        self.TNotebook1_pg5 = ttk.Frame(self.TNotebook1)
+        self.TNotebook1.add(self.TNotebook1_pg5, padding=3)
+        self.TNotebook1.tab(5, text="DiscoverPaymentMethod",underline="-1",)
+
 
         self.Label1 = Label(self.TNotebook1_pg0)
         self.Label1.place(relx=0.01, rely=0.03, height=21, width=134)
@@ -123,6 +127,7 @@ class New_Toplevel_1:
         self.Entry1.configure(selectbackground="#c4c4c4")
         self.Entry1.configure(selectforeground="black")
         self.Entry1.configure(textvariable=main_support.configAuthorizationWSDL)
+
 
         self.Label4 = Label(self.TNotebook1_pg0)
         self.Label4.place(relx=0.01, rely=0.29, height=21, width=134)
@@ -186,6 +191,11 @@ class New_Toplevel_1:
         self.TNotebook2_pg2 = ttk.Frame(self.TNotebook2)
         self.TNotebook2.add(self.TNotebook2_pg2, padding=3)
         self.TNotebook2.tab(2, text="CS Retail",underline="-1",)
+        #####################################################################################################################
+        self.TNotebook2_pg3 = ttk.Frame(self.TNotebook2)
+        self.TNotebook2.add(self.TNotebook2_pg3, padding=3)
+        self.TNotebook2.tab(3, text="Optionals",underline="-1",)
+
 
         self.Label6 = Label(self.TNotebook2_pg0)
         self.Label6.place(relx=0.01, rely=0.02, height=21, width=134)
@@ -1462,6 +1472,122 @@ class New_Toplevel_1:
         self.Entry57.configure(selectforeground="black")
         self.Entry57.configure(textvariable=main_support.CSMDD15)
 
+
+        ##############################################################
+        ##############################################################
+        self.Checkbutton_AVAILABLEPAYMENTMETHODSIDS = Checkbutton(self.TNotebook2_pg3)
+        self.Checkbutton_AVAILABLEPAYMENTMETHODSIDS.place(relx=0.01, rely=0.02, relheight=0.04, relwidth=0.23)
+        self.Checkbutton_AVAILABLEPAYMENTMETHODSIDS.configure(activebackground="#d9d9d9")
+        self.Checkbutton_AVAILABLEPAYMENTMETHODSIDS.configure(activeforeground="#000000")
+        self.Checkbutton_AVAILABLEPAYMENTMETHODSIDS.configure(background=_bgcolor)
+        self.Checkbutton_AVAILABLEPAYMENTMETHODSIDS.configure(disabledforeground="#a3a3a3")
+        self.Checkbutton_AVAILABLEPAYMENTMETHODSIDS.configure(foreground="#000000")
+        self.Checkbutton_AVAILABLEPAYMENTMETHODSIDS.configure(highlightbackground="#d9d9d9")
+        self.Checkbutton_AVAILABLEPAYMENTMETHODSIDS.configure(highlightcolor="black")
+        self.Checkbutton_AVAILABLEPAYMENTMETHODSIDS.configure(justify=LEFT)
+        self.Checkbutton_AVAILABLEPAYMENTMETHODSIDS.configure(text='''AVAILABLEPAYMENTMETHODSIDS''')
+        self.Checkbutton_AVAILABLEPAYMENTMETHODSIDS.configure(variable=main_support.che_AVAILABLEPAYMENTMETHODSIDS)
+
+        self.Checkbutton2 = Checkbutton(self.TNotebook2_pg3)
+        #self.Checkbutton2.place(relx=0.01, rely=0.02, relheight=0.04, relwidth=0.23)
+        self.Checkbutton2.place(relx=0.01, rely=0.07, relheight=0.04, relwidth=0.14)
+        self.Checkbutton2.configure(activebackground="#d9d9d9")
+        self.Checkbutton2.configure(activeforeground="#000000")
+        self.Checkbutton2.configure(background=_bgcolor)
+        self.Checkbutton2.configure(disabledforeground="#a3a3a3")
+        self.Checkbutton2.configure(foreground="#000000")
+        self.Checkbutton2.configure(highlightbackground="#d9d9d9")
+        self.Checkbutton2.configure(highlightcolor="black")
+        self.Checkbutton2.configure(justify=LEFT)
+        self.Checkbutton2.configure(text='''PushNotifyMethod''')
+        self.Checkbutton2.configure(variable=main_support.che_PushNotifyMethod)
+
+        self.Checkbutton3 = Checkbutton(self.TNotebook2_pg3)
+        #self.Checkbutton_AVAILABLEPAYMENTMETHODSIDS.place(relx=0.01, rely=0.02, relheight=0.04, relwidth=0.23)
+        self.Checkbutton3.place(relx=0.01, rely=0.12, relheight=0.04, relwidth=0.15)
+        self.Checkbutton3.configure(activebackground="#d9d9d9")
+        self.Checkbutton3.configure(activeforeground="#000000")
+        self.Checkbutton3.configure(background=_bgcolor)
+        self.Checkbutton3.configure(disabledforeground="#a3a3a3")
+        self.Checkbutton3.configure(foreground="#000000")
+        self.Checkbutton3.configure(highlightbackground="#d9d9d9")
+        self.Checkbutton3.configure(highlightcolor="black")
+        self.Checkbutton3.configure(justify=LEFT)
+        self.Checkbutton3.configure(text='''PushNotifyEndpoint''')
+        self.Checkbutton3.configure(variable=main_support.che_PushNotifyEndpoint)
+
+        self.Checkbutton4 = Checkbutton(self.TNotebook2_pg3)
+        #self.Checkbutton_AVAILABLEPAYMENTMETHODSIDS.place(relx=0.01, rely=0.02, relheight=0.04, relwidth=0.23)
+        self.Checkbutton4.place(relx=0.01, rely=0.17, relheight=0.04, relwidth=0.13)
+        self.Checkbutton4.configure(activebackground="#d9d9d9")
+        self.Checkbutton4.configure(activeforeground="#000000")
+        self.Checkbutton4.configure(background=_bgcolor)
+        self.Checkbutton4.configure(disabledforeground="#a3a3a3")
+        self.Checkbutton4.configure(foreground="#000000")
+        self.Checkbutton4.configure(highlightbackground="#d9d9d9")
+        self.Checkbutton4.configure(highlightcolor="black")
+        self.Checkbutton4.configure(justify=LEFT)
+        self.Checkbutton4.configure(text='''PushNotifyStates''')
+        self.Checkbutton4.configure(variable=main_support.che_PushNotifyStates)
+
+        self.Entry66 = Entry(self.TNotebook2_pg3)
+        self.Entry66.place(relx=0.25, rely=0.02, relheight=0.03, relwidth=0.26)
+        self.Entry66.configure(background="white")
+        self.Entry66.configure(disabledforeground="#a3a3a3")
+        self.Entry66.configure(font="TkFixedFont")
+        self.Entry66.configure(foreground="#000000")
+        self.Entry66.configure(highlightbackground="#d9d9d9")
+        self.Entry66.configure(highlightcolor="black")
+        self.Entry66.configure(insertbackground="black")
+        self.Entry66.configure(selectbackground="#c4c4c4")
+        self.Entry66.configure(selectforeground="black")
+        self.Entry66.configure(textvariable=main_support.AVAILABLEPAYMENTMETHODSIDS)
+
+        self.Entry67 = Entry(self.TNotebook2_pg3)
+        self.Entry67.place(relx=0.25, rely=0.07, relheight=0.03, relwidth=0.26)
+        self.Entry67.configure(background="white")
+        self.Entry67.configure(disabledforeground="#a3a3a3")
+        self.Entry67.configure(font="TkFixedFont")
+        self.Entry67.configure(foreground="#000000")
+        self.Entry67.configure(highlightbackground="#d9d9d9")
+        self.Entry67.configure(highlightcolor="black")
+        self.Entry67.configure(insertbackground="black")
+        self.Entry67.configure(selectbackground="#c4c4c4")
+        self.Entry67.configure(selectforeground="black")
+        self.Entry67.configure(textvariable=main_support.PushNotifyMethod)
+
+        self.Entry68 = Entry(self.TNotebook2_pg3)
+        self.Entry68.place(relx=0.25, rely=0.12, relheight=0.03, relwidth=0.26)
+        self.Entry68.configure(background="white")
+        self.Entry68.configure(disabledforeground="#a3a3a3")
+        self.Entry68.configure(font="TkFixedFont")
+        self.Entry68.configure(foreground="#000000")
+        self.Entry68.configure(highlightbackground="#d9d9d9")
+        self.Entry68.configure(highlightcolor="black")
+        self.Entry68.configure(insertbackground="black")
+        self.Entry68.configure(selectbackground="#c4c4c4")
+        self.Entry68.configure(selectforeground="black")
+        self.Entry68.configure(textvariable=main_support.PushNotifyEndpoint)
+
+        self.Entry69 = Entry(self.TNotebook2_pg3)
+        self.Entry69.place(relx=0.25, rely=0.17, relheight=0.03, relwidth=0.26)
+        self.Entry69.configure(background="white")
+        self.Entry69.configure(disabledforeground="#a3a3a3")
+        self.Entry69.configure(font="TkFixedFont")
+        self.Entry69.configure(foreground="#000000")
+        self.Entry69.configure(highlightbackground="#d9d9d9")
+        self.Entry69.configure(highlightcolor="black")
+        self.Entry69.configure(insertbackground="black")
+        self.Entry69.configure(selectbackground="#c4c4c4")
+        self.Entry69.configure(selectforeground="black")
+        self.Entry69.configure(textvariable=main_support.PushNotifyStates)
+
+
+
+        ##############################################################
+        ##############################################################
+
+
         self.Label58 = Label(self.TNotebook1_pg2)
         self.Label58.place(relx=0.01, rely=0.02, height=21, width=124)
         self.Label58.configure(background=_bgcolor)
@@ -1671,6 +1797,37 @@ class New_Toplevel_1:
         self.Text_gapmAnswer.configure(width=934)
         self.Text_gapmAnswer.configure(wrap=WORD)
     
+    
+    
+        self.Button6 = Button(self.TNotebook1_pg5)
+        self.Button6.place(relx=0.01, rely=0.02, height=24, width=277)
+        self.Button6.configure(activebackground="#d9d9d9")
+        self.Button6.configure(activeforeground="#000000")
+        self.Button6.configure(background=_bgcolor)
+        self.Button6.configure(command=main_support.discoverPaymentMethodsCommand)
+        self.Button6.configure(disabledforeground="#a3a3a3")
+        self.Button6.configure(foreground="#000000")
+        self.Button6.configure(highlightbackground="#d9d9d9")
+        self.Button6.configure(highlightcolor="black")
+        self.Button6.configure(pady="0")
+        self.Button6.configure(text='''DiscoverPaymentMethods''')
+        self.Button6.configure(width=277)
+
+        self.Text_DiscoverPMAnswer = Text(self.TNotebook1_pg5)
+        self.Text_DiscoverPMAnswer.place(relx=0.01, rely=0.08, relheight=0.91
+                , relwidth=0.98)
+        self.Text_DiscoverPMAnswer.configure(background="white")
+        self.Text_DiscoverPMAnswer.configure(font="TkTextFont")
+        self.Text_DiscoverPMAnswer.configure(foreground="black")
+        self.Text_DiscoverPMAnswer.configure(highlightbackground="#d9d9d9")
+        self.Text_DiscoverPMAnswer.configure(highlightcolor="black")
+        self.Text_DiscoverPMAnswer.configure(insertbackground="black")
+        self.Text_DiscoverPMAnswer.configure(selectbackground="#c4c4c4")
+        self.Text_DiscoverPMAnswer.configure(selectforeground="black")
+        self.Text_DiscoverPMAnswer.configure(width=934)
+        self.Text_DiscoverPMAnswer.configure(wrap=WORD)
+
+        
         
         
         #configure result Text
@@ -1678,10 +1835,13 @@ class New_Toplevel_1:
         self.Text_gaaAnswer.configure(state=DISABLED)
         self.Text_sarAnswer.configure(state=DISABLED)
         self.Text_gapmAnswer.configure(state=DISABLED)
+        self.Text_DiscoverPMAnswer.configure(state=DISABLED)
+        
         main_support.TgsAnswer = self.Text_gsAnswer
         main_support.TgaaAnswer = self.Text_gaaAnswer
         main_support.TsarAnswer = self.Text_sarAnswer
         main_support.TgapmAnswer = self.Text_gapmAnswer
+        main_support.Text_DiscoverPMAnswer = self.Text_DiscoverPMAnswer
         
         
         

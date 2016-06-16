@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'TodoPagoConector'
-  s.version = '1.1.0'
+  s.version = '1.3.0'
   s.date = '2015-02-03'
   s.summary="test conector"
   s.description = "Conector para la plataforma de pagos"

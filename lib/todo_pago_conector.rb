@@ -1,12 +1,15 @@
 require 'savon'
 require 'rest-client'
+require "../lib/FraudControlValidation.rb"
 
-$versionTodoPago = '1.2.0'
+$versionTodoPago = '1.3.0'
 
 
 $tenant = 't/1.1/'
 $soapAppend = 'services/'
 $restAppend = 'api/'
+
+
 
 class TodoPagoConector
   # método inicializar clase
@@ -26,6 +29,8 @@ class TodoPagoConector
     # atributos
     $j_header_http = j_header_http
     $j_wsdls = j_wsdls
+
+    @Fcv = nil
     #hacer un if si es prod o test
     $endPoint = endpoint #recibe endpoint incompleto
   end
@@ -45,37 +50,62 @@ class TodoPagoConector
   end
 
   def self.buildPayload(optionAuthorize)
-    
+
+    # optionAuthorize[:SDK] = "Ruby"
+    # optionAuthorize[:SDKVERSION] = $versionTodoPago
+    # optionAuthorize[:LENGUAGEVERSION] = "#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}"
+	
     @xml = "<Request>"
     optionAuthorize.each do |item|
-      @xml = @xml.concat("<")
-                 .concat(item[0].to_s)
-                 .concat(">")
-                 .concat(item[1])
-                 .concat("</")
-                 .concat(item[0].to_s)
-                 .concat(">")
+      @xml = @xml.concat("<").concat(item[0].to_s).concat(">")
+      
+      #crop values
+      aux = if item[1].size > 254 then item[1].slice(0, 253)
+      else
+        item[1]
+      end
+      
+      @xml = @xml.concat(aux)
+      
+      @xml = @xml.concat("</").concat(item[0].to_s).concat(">")
     end
     @xml = @xml.concat("</Request>");
+    
+    #puts(@xml);
+    
     return @xml;
   end
   ######################################################################################
-  ###Methodo publico que llama a la primera funcion del servicio SendAuthorizeRequest###
+  # => Public method that calls first function service sendAuthorizeRequest          ###
   ######################################################################################
-  def sendAuthorizeRequest(options_comercio, options_operacion)
+  def sendAuthorizeRequest(options_commerce, optionsAuthorize)
+  begin
+      @Fcv = FraudControlValidation.new()
+      result = @Fcv.validate(optionsAuthorize)
 
-    message = {Security: options_comercio[:security],
-               Merchant: options_comercio[:MERCHANT],
-               EncodingMethod: options_comercio[:EncodingMethod],
-               URL_OK: options_comercio[:URL_OK],
-               URL_ERROR: options_comercio[:URL_ERROR],
-               EMAILCLIENTE: options_comercio[:EMAILCLIENTE],
-               Session: options_comercio[:Session],
-               Payload: TodoPagoConector.buildPayload(options_operacion)};
+      if (@Fcv.campError.empty? )
+          optionsAuthorize = result
+          message = {Security: options_commerce[:security],
+                     Merchant: options_commerce[:MERCHANT],
+                     EncodingMethod: options_commerce[:EncodingMethod],
+                     URL_OK: options_commerce[:URL_OK],
+                     URL_ERROR: options_commerce[:URL_ERROR],
+                     EMAILCLIENTE: options_commerce[:EMAILCLIENTE],
+                     Session: options_commerce[:Session],
+                     Payload: TodoPagoConector.buildPayload(optionsAuthorize)}
 
-    client = TodoPagoConector.getClientSoap($j_wsdls['Authorize'],'Authorize');
-    response = client.call(:send_authorize_request, message: message)
-    return response.hash
+          client = TodoPagoConector.getClientSoap($j_wsdls['Authorize'],'Authorize')
+          response = client.call(:send_authorize_request, message: message)
+      else
+          @Fcv.campError.each do |field , message|
+            puts field + ': ' + message
+          end
+      end
+
+      return response.hash
+  rescue Exception=>e
+      e.message
+  end     
   end
   #####################################################################################
   ###Methodo publico que llama a la segunda funcion del servicio GetAuthorizeAnswer###
@@ -102,8 +132,10 @@ class TodoPagoConector
   ############################################################
   def getOperations(optionsOperations)
     url = $endPoint + $tenant + $restAppend + 'Operations/GetByOperationId/MERCHANT/' + optionsOperations[:MERCHANT] + '/OPERATIONID/' + optionsOperations[:OPERATIONID]
-    #url = $j_wsdls['Services'] + 'api/Operations/GetByOperationId/MERCHANT/' + optionsOperations[:MERCHANT] + '/OPERATIONID/' + optionsOperations[:OPERATIONID]
-    xml = RestClient.get url
+    
+    resource = RestClient::Resource.new(url, :verify_ssl => false)
+    xml = resource.get( :Authorization => $j_header_http['Authorization'] )
+	
 	return xml
   end
   ################################################################
@@ -111,8 +143,22 @@ class TodoPagoConector
   ################################################################
   def getAllPaymentMethods(optionsPaymentMethod)
     url = $endPoint + $tenant + $restAppend + 'PaymentMethods/Get/MERCHANT/' + optionsPaymentMethod[:MERCHANT]
-  	#url = $j_wsdls['Services'] + 'api/PaymentMethods/Get/MERCHANT/' + optionsPaymentMethod[:MERCHANT]
-  	xml = RestClient.get url
+  	
+  	resource = RestClient::Resource.new(url, :verify_ssl => false)
+    xml = resource.get( :Authorization => $j_header_http['Authorization'] )
+    
+    
+    return xml
+  end
+  ######################################################
+  ###Methodo publico que descubre los metodos de pago###
+  ######################################################
+  def discoverPaymentMethods()
+    url = $endPoint + $tenant + $restAppend + 'PaymentMethods/Discover'
+    
+    resource = RestClient::Resource.new(url, :verify_ssl => false)
+    xml = resource.get( :Authorization => $j_header_http['Authorization'] )
+    
     return xml
   end
   

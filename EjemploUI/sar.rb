@@ -74,15 +74,26 @@ optionsSAR_operacion[:CSMDD13]= ARGV.fetch(54)
 optionsSAR_operacion[:CSMDD15]= ARGV.fetch(55) 
 #Fin Control de Fraude
 
-
+#AVAILABLEPAYMENTMETHODSIDS
+if ARGV.fetch(56)=="1"
+  optionsSAR_operacion[:AVAILABLEPAYMENTMETHODSIDS]= ARGV.fetch(57)
+end
+#PushNotifyMethod
+if ARGV.fetch(58)=="1"
+  optionsSAR_operacion[:PUSHNOTIFYMETHOD]=ARGV.fetch(59)
+end
+#PushNotifyEndpoint
+if ARGV.fetch(60)=="1"
+  optionsSAR_operacion[:PUSHNOTIFYENDPOINT]=ARGV.fetch(61)
+end
+#PushNotifyStates
+if ARGV.fetch(62)=="1"
+  optionsSAR_operacion[:PUSHNOTIFYSTATES]=ARGV.fetch(63)
+end
+#print optionsSAR_operacion, "\n"
 
 response = conector.sendAuthorizeRequest(optionsSAR_comercio,optionsSAR_operacion)
 
 print response, "\n"
 
 STDOUT.flush
-
-
-
-
-
