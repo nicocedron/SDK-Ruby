@@ -1,3 +1,4 @@
+#encoding: utf-8
 require_relative "Exceptions/empty_field_user_exception"
 require_relative "Exceptions/empty_field_password_exception"
 

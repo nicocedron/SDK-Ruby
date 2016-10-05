@@ -1,42 +1,44 @@
+#encoding: utf-8
 require 'savon'
 require 'rest-client'
-require "../lib/FraudControlValidation.rb"
+require "json"
 
-$versionTodoPago = '1.3.0'
-
+$versionTodoPago = '1.5.0'
 
 $tenant = 't/1.1/'
 $soapAppend = 'services/'
 $restAppend = 'api/'
 
-
-
 class TodoPagoConector
   # método inicializar clase
   def initialize(j_header_http, *args)#j_wsdl=nil, endpoint=nil, env=nil
-    if args.length==2
-      j_wsdls = args[0]
-      endpoint = args[1]
-    else args.length == 1     
-      j_wsdls = {
-    'Operations'=> '../lib/Operations.wsdl',
-    'Authorize'=> '../lib/Authorize.wsdl'
-    }
-      if args[0]=="test"
-        endpoint = 'https://developers.todopago.com.ar/'
-      end
-    end
-    # atributos
-    $j_header_http = j_header_http
-    $j_wsdls = j_wsdls
 
-    @Fcv = nil
-    #hacer un if si es prod o test
-    $endPoint = endpoint #recibe endpoint incompleto
+      if args.length == 2
+
+          j_wsdls  = args[0]
+          endpoint = args[1]
+
+      else args.length == 1
+
+          j_wsdls = { 'Operations'=> '../lib/Operations.wsdl', 'Authorize'=> '../lib/Authorize.wsdl' }
+          if args[0] == "test"
+              endpoint = 'https://developers.todopago.com.ar/'
+          end
+
+      end
+
+      # atributos
+      $j_header_http = j_header_http
+      $j_wsdls       = j_wsdls
+      $discover      = nil
+      @Fcv           = nil
+      #hacer un if si es prod o test
+      $endPoint = endpoint #recibe endpoint incompleto
+
   end
 
   ###########################################################################################
-  #Methodo de clase que crea cliente que accede al servicio a través de SOAP utilizando savon
+  #Metodo de clase que crea cliente que accede al servicio a través de SOAP utilizando savon
   ###########################################################################################
   def self.getClientSoap(wsdlService,sufijoEndpoint)
     return Savon.client(
@@ -79,12 +81,7 @@ class TodoPagoConector
   # => Public method that calls first function service sendAuthorizeRequest          ###
   ######################################################################################
   def sendAuthorizeRequest(options_commerce, optionsAuthorize)
-  begin
-      @Fcv = FraudControlValidation.new()
-      result = @Fcv.validate(optionsAuthorize)
-
-      if (@Fcv.campError.empty? )
-          optionsAuthorize = result
+      begin
           message = {Security: options_commerce[:security],
                      Merchant: options_commerce[:MERCHANT],
                      EncodingMethod: options_commerce[:EncodingMethod],
@@ -95,20 +92,19 @@ class TodoPagoConector
                      Payload: TodoPagoConector.buildPayload(optionsAuthorize)}
 
           client = TodoPagoConector.getClientSoap($j_wsdls['Authorize'],'Authorize')
+          
           response = client.call(:send_authorize_request, message: message)
-      else
-          @Fcv.campError.each do |field , message|
-            puts field + ': ' + message
-          end
-      end
 
-      return response.hash
-  rescue Exception=>e
-      e.message
-  end     
+          resp  = response.hash
+
+          return resp.to_json
+      rescue Exception=>e
+          e.message
+          #return e.message
+      end     
   end
   #####################################################################################
-  ###Methodo publico que llama a la segunda funcion del servicio GetAuthorizeAnswer###
+  ###Metodo publico que llama a la segunda funcion del servicio GetAuthorizeAnswer###
   #####################################################################################
   # <b>DEPRECATED:</b> Please use <tt>getAuthorizeAnswer</tt> instead.
   def getAuthorizeRequest(optionsAnwser)
@@ -124,11 +120,12 @@ class TodoPagoConector
 
     client = TodoPagoConector.getClientSoap($j_wsdls['Authorize'],'Authorize')
     response= client.call(:get_authorize_answer,message:message)
-    return response.hash
+    resp = response.hash
+    return resp.to_json
   end
 
   ############################################################
-  ###Methodo publico que retorna el status de una operacion###
+  ###Metodo publico que retorna el status de una operacion###
   ############################################################
   def getOperations(optionsOperations)
     url = $endPoint + $tenant + $restAppend + 'Operations/GetByOperationId/MERCHANT/' + optionsOperations[:MERCHANT] + '/OPERATIONID/' + optionsOperations[:OPERATIONID]
@@ -139,7 +136,7 @@ class TodoPagoConector
 	return xml
   end
   ################################################################
-  ###Methodo publico que descubre todas las promociones de pago###
+  ###Metodo publico que descubre todas las promociones de pago###
   ################################################################
   def getAllPaymentMethods(optionsPaymentMethod)
     url = $endPoint + $tenant + $restAppend + 'PaymentMethods/Get/MERCHANT/' + optionsPaymentMethod[:MERCHANT]
@@ -150,24 +147,14 @@ class TodoPagoConector
     
     return xml
   end
-  ######################################################
-  ###Methodo publico que descubre los metodos de pago###
-  ######################################################
-  def discoverPaymentMethods()
-    url = $endPoint + $tenant + $restAppend + 'PaymentMethods/Discover'
-    
-    resource = RestClient::Resource.new(url, :verify_ssl => false)
-    xml = resource.get( :Authorization => $j_header_http['Authorization'] )
-    
-    return xml
-  end
-  
+
+
   ##############################################################################
-  ###Methodo publico que descubre todas las operaciones en un rango de fechas###
+  ###Metodo publico que descubre todas las operaciones en un rango de fechas###
   ##############################################################################
   ##$url = $this->end_point.TODOPAGO_ENDPOINT_TENATN.'api/Operations/GetByRangeDateTime/MERCHANT/'. $arr_datos["MERCHANT"] . '/STARTDATE/' . $arr_datos["STARTDATE"] . '/ENDDATE/' . $arr_datos["ENDDATE"] . '/PAGENUMBER/' . $arr_datos["PAGENUMBER"];
  
- def getByRangeDateTime(optionsAnswer)
+  def getByRangeDateTime(optionsAnswer)
     url = $endPoint + $tenant + $restAppend +"Operations/GetByRangeDateTime/MERCHANT/#{optionsAnswer[:Merchant]}/STARTDATE/#{optionsAnswer[:STARTDATE]}/ENDDATE/#{optionsAnswer[:ENDDATE]}/PAGENUMBER/#{optionsAnswer[:PAGENUMBER]}"         
     response = RestClient.get url
     return response
@@ -187,21 +174,39 @@ class TodoPagoConector
 
     client = TodoPagoConector.getClientSoap($j_wsdls['Authorize'], 'Authorize')
     response= client.call(:return_request, message:message)
-    return response.hash
+    resp = response.hash
+    return resp.to_json
   end
+
   ########################################################################
   ### GETCREDENTIALS######################################################
   ########################################################################
   def getCredentials(user)
     url = $endPoint + $restAppend +"Credentials"
     response = RestClient.post url, user.getData.to_json, :content_type => :json
-	response = JSON.parse(response)
-	if response['Credentials']['resultado']['codigoResultado'] != 0
-		raise ResponseException.new
-	end
-	user.merchant = response['Credentials']['merchantId']
-	user.apiKey = response['Credentials']['APIKey']
-	return user
+    response = JSON.parse(response)
+    if response['Credentials']['resultado']['codigoResultado'] != 0
+    	raise ResponseException.new
+    end
+    user.merchant = response['Credentials']['merchantId']
+    user.apiKey = response['Credentials']['APIKey']
+    return user
   end
 
+  ######################################################
+  ###Methodo publico que descubre los metodos de pago###
+  ######################################################
+  def discoverPaymentMethods()
+    url = $endPoint + $tenant + $restAppend + 'PaymentMethods/Discover' 
+    resource = RestClient::Resource.new(url, :verify_ssl => false)
+    xml = resource.get( :Authorization => $j_header_http['Authorization'] ) 
+    return xml
+  end
+
+
 end
+
+
+
+
+

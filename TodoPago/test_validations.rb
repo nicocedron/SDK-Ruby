@@ -1,3 +1,4 @@
+#encoding: utf-8
 require "../lib/FraudControlValidation"
 require "../lib/todo_pago_conector.rb"
 require "../lib/user.rb"

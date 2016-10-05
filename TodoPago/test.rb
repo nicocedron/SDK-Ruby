@@ -1,6 +1,7 @@
-
+#encoding: utf-8
 require "../lib/todo_pago_conector.rb"
 require "../lib/user.rb"
+
 require "../lib/Exceptions/empty_field_user_exception.rb"
 require "../lib/Exceptions/empty_field_password_exception.rb"
 require "../lib/Exceptions/connection_exception.rb"
@@ -26,7 +27,7 @@ optionsSAR_operacion[:CSBTCITY]="Villa General Belgrano"
 optionsSAR_operacion[:CSBTCOUNTRY]= "AR"
 optionsSAR_operacion[:CSBTEMAIL]= "todopago@hotmail.com"
 optionsSAR_operacion[:CSBTFIRSTNAME]= "Juan"
-optionsSAR_operacion[:CSBTLASTNAME]= "Perez"
+optionsSAR_operacion[:CSBTLASTNAME]= "Peréz"
 optionsSAR_operacion[:CSBTPHONENUMBER]= "541160913988"     
 optionsSAR_operacion[:CSBTPOSTALCODE]= " 1010"
 optionsSAR_operacion[:CSBTSTATE]= "B"
@@ -54,7 +55,7 @@ optionsSAR_operacion[:CSSTSTATE]= "B"
 optionsSAR_operacion[:CSSTSTREET1]= "Cerrito 740"
 
 optionsSAR_operacion[:CSITPRODUCTCODE]= "electronic_good"
-optionsSAR_operacion[:CSITPRODUCTDESCRIPTION]= "Test Prd Description"     
+optionsSAR_operacion[:CSITPRODUCTDESCRIPTION]= "Test Prd Description "     
 optionsSAR_operacion[:CSITPRODUCTNAME]= "TestPrd"  
 optionsSAR_operacion[:CSITPRODUCTSKU]= "SKU1234"
 optionsSAR_operacion[:CSITTOTALAMOUNT]= "10.01"
@@ -74,7 +75,7 @@ optionsSAR_operacion[:AVAILABLEPAYMENTMETHODSIDS]= "1#194#43#45"
 optionsSAR_operacion[:PUSHNOTIFYMETHOD]= ""
 optionsSAR_operacion[:PUSHNOTIFYENDPOINT]= ""  
 optionsSAR_operacion[:PUSHNOTIFYSTATES]= ""
-
+optionsSAR_operacion[:MAXINSTALLMENTS]= "6"
 
 optionsSAR_comercio = Hash.new
 optionsSAR_comercio[:Security]="1234567890ABCDEF1234567890ABCDEF"
@@ -92,7 +93,6 @@ puts(response) # aca debo ver si viene el campo CANAL
 puts('------------------------------------------------------------------------------------------------')
 
 
-
 #GAA
 optionsAnwser=Hash.new
 optionsAnwser[:security]= "f3d8b72c94ab4a06be2ef7c95490f7d3"
@@ -104,6 +104,7 @@ response = conector.getAuthorizeAnswer(optionsAnwser)
 puts('GetAuthorizeAnswer:')
 puts(response)
 puts('------------------------------------------------------------------------------------------------')
+
 
 ######################################PaymentMethods#########################################
 #GAPM
@@ -165,23 +166,10 @@ puts(response)
 puts('------------------------------------------------------------------------------------------------')
 
 
+######################################GET CREDENTIALS###############################################
 puts("GET CREDENTIALS")
 #Credentials
 u = User.new("email@ejemplo.com", "password1")
 response = conector.getCredentials(u)
-puts(response.merchant)
-puts(response.apiKey)
-
-######################################DiscoverPaymentMethods#########################################
-#DPM
-response = conector.discoverPaymentMethods()
-puts('DiscoverPaymentMethods:')
 puts(response)
-#Pasar del XML a Hash - Rails
-#require 'active_support'
-#hash = Hash.from_xml(response)
-#Pasar del XML a Hash - sin Rails
-#require 'xmlsimple'
-#hash = XmlSimple.xml_in(response)
 
-puts('------------------------------------------------------------------------------------------------')

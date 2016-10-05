@@ -1,3 +1,4 @@
+#encoding: utf-8
 require "../lib/todo_pago_conector.rb"
 
 #Configure TodoPago
