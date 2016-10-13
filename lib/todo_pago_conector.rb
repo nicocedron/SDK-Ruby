@@ -3,7 +3,7 @@ require 'savon'
 require 'rest-client'
 require "json"
 
-$versionTodoPago = '1.5.0'
+$versionTodoPago = '1.5.1'
 
 $tenant = 't/1.1/'
 $soapAppend = 'services/'
@@ -21,7 +21,9 @@ class TodoPagoConector
       else args.length == 1
 
           j_wsdls = { 'Operations'=> '../lib/Operations.wsdl', 'Authorize'=> '../lib/Authorize.wsdl' }
-          if args[0] == "test"
+          if args[0] == "prod"
+              endpoint = 'https://apis.todopago.com.ar/'
+          else
               endpoint = 'https://developers.todopago.com.ar/'
           end
 
@@ -32,8 +34,7 @@ class TodoPagoConector
       $j_wsdls       = j_wsdls
       $discover      = nil
       @Fcv           = nil
-      #hacer un if si es prod o test
-      $endPoint = endpoint #recibe endpoint incompleto
+      $endPoint = endpoint
 
   end
 
