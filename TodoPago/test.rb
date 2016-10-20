@@ -75,6 +75,7 @@ optionsSAR_operacion[:AVAILABLEPAYMENTMETHODSIDS]= "1#194#43#45"
 optionsSAR_operacion[:PUSHNOTIFYMETHOD]= ""
 optionsSAR_operacion[:PUSHNOTIFYENDPOINT]= ""  
 optionsSAR_operacion[:PUSHNOTIFYSTATES]= ""
+optionsSAR_operacion[:MININSTALLMENTS]= "1"
 optionsSAR_operacion[:MAXINSTALLMENTS]= "6"
 
 optionsSAR_comercio = Hash.new

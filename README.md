@@ -130,11 +130,11 @@ optionsSAR_operacion[:CURRENCYCODE] = "032"
 optionsSAR_operacion[:AMOUNT] = "1.00"
 ```
 
-Tambien hay un dato opcional para informar la cantidad máxima de cuotas que ofrecerá el formulario de pago (generalmente de 1 a 12). Ejemplo : 
-
- ```ruby
- optionsSAR_operacion[:MAXINSTALLMENTS] = "6"
- ```
+Tambien hay dos datos opcional para informar la cantidad minima y máxima de cuotas que ofrecerá el formulario de pago (generalmente de 1 a 12). Ejemplo :
+```ruby
+optionsSAR_operacion[:MININSTALLMENTS] = "1"
+optionsSAR_operacion[:MAXINSTALLMENTS] = "6"
+```
 
 La variable response contendrá una estuctura en la cual **url_request** es donde está hosteado el formulario de pago y donde hay que redireccionar al usuario, una vez realizado el pago según el éxito o fracaso del mismo, el formulario redireccionará a una de las 2 URLs seteadas en **optionsSAR_comercio** ([URL_OK](#url_ok), en caso de éxito o [URL_ERROR](#url_error), en caso de que por algún motivo el formulario rechace el pago)
 
@@ -149,6 +149,29 @@ optionsAnwser[:RequestKey]= "710268a7-7688-c8bf-68c9-430107e6b9da" #Valor retorn
 optionsAnwser[:AnswerKey]= "693ca9cc-c940-06a4-8d96-1ab0d66f3ee6"  #Valor que figura en la URL del redirect luego de realizar el pago
 
 response = conector.getAuthorizeAnswer(optionsAnwser)
+
+RESPONSE : 
+{ StatusCode = -1,      
+      StatusMessage = APROBADA,     
+      AuthorizationKey = 1294-329E-F2FD-1AD8-3614-1218-2693-1378,       
+      EncodingMethod = XML,     
+      Payload = { Answer = { DATETIME = 2014/08/11 15:24:38,        
+                             RESULTCODE = -1,       
+                             RESULTMESSAGE = APROBADA,      
+                             CURRENCYNAME = Pesos,      
+                             PAYMENTMETHODNAME = VISA,      
+                             TICKETNUMBER = 12,     
+                             CARDNUMBERVISIBLE = 450799******4905,      
+                             AUTHORIZATIONCODE = TEST38,
+                             INSTALLMENTPAYMENTS = 6 }, 
+                { Request = { MERCHANT = 12345678,
+                              OPERATIONID = ABCDEF-1234-12221-FDE1-00000012,
+                              AMOUNT = 1.00,
+                              CURRENCYCODE = 032}
+                }
+    }
+
+
 ```		
 
 Se deben guardar y recuperar los valores de los campos <strong>RequestKey</strong> y <strong>AnswerKey</strong>.
@@ -450,6 +473,7 @@ El formulario implementado debe contar al menos con los siguientes campos.
 	<select id="tipoDocCbx"></select>
 	<input id="nroDocTxt"/>
 	<input id="emailTxt"/><br/>
+	<button id="MY_btnPagarConBilletera"/>
 	<button id="MY_btnConfirmarPago"/>
 </body>
 ```
@@ -466,7 +490,9 @@ window.TPFORMAPI.hybridForm.initForm({
     callbackValidationErrorFunction: 'validationCollector',
 	callbackCustomSuccessFunction: 'customPaymentSuccessResponse',
 	callbackCustomErrorFunction: 'customPaymentErrorResponse',
+	callbackBilleteraFunction: 'billeteraPaymentResponse',
 	botonPagarId: 'MY_btnConfirmarPago',
+	botonPagarConBilleteraId: 'MY_btnPagarConBilletera',
 	modalCssClass: 'modal-class',
 	modalContentCssClass: 'modal-content',
 	beforeRequest: 'initLoading',
@@ -484,6 +510,8 @@ window.TPFORMAPI.hybridForm.setItem({
 //callbacks de respuesta del pago
 function validationCollector(parametros) {
 }
+function billeteraPaymentResponse(response) {
+}
 function customPaymentSuccessResponse(response) {
 }
 function customPaymentErrorResponse(response) {
@@ -496,6 +524,7 @@ function stopLoading() {
 
 **Callbacks**<br>
 El formulario define callbacks javascript, que son llamados según el estado y la informacion del pago realizado:
++ billeteraPaymentResponse: Devuelve response si el pago con billetera se realizó correctamente.
 + customPaymentSuccessResponse: Devuelve response si el pago se realizo correctamente.
 + customPaymentErrorResponse: Si hubo algun error durante el proceso de pago, este devuelve el response con el codigo y mensaje correspondiente.
 

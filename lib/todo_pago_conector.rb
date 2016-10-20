@@ -3,7 +3,7 @@ require 'savon'
 require 'rest-client'
 require "json"
 
-$versionTodoPago = '1.5.1'
+$versionTodoPago = '1.6.1'
 
 $tenant = 't/1.1/'
 $soapAppend = 'services/'
