@@ -167,7 +167,8 @@ RESPONSE :
                 { Request = { MERCHANT = 12345678,
                               OPERATIONID = ABCDEF-1234-12221-FDE1-00000012,
                               AMOUNT = 1.00,
-                              CURRENCYCODE = 032}
+                              CURRENCYCODE = 032,
+							  AMOUNTBUYER = 1.20}
                 }
     }
 
@@ -179,6 +180,8 @@ Se deben guardar y recuperar los valores de los campos <strong>RequestKey</stron
 El parámetro <strong>RequestKey</strong> es siempre distinto y debe ser persistido de alguna forma cuando el comprador es redirigido al formulario de pagos.
 
 <ins><strong>Importante</strong></ins> El campo **AnswerKey** se adiciona  en la redirección que se realiza a alguna de las direcciones ( URL ) epecificadas en el  servicio **SendAurhorizationRequest**, esto sucede cuando la transacción ya fue resuelta y es necesario regresar al site para finalizar la transacción de pago.		
+
+<ins><strong>Aclaración:</strong></ins> El campo AMOUNTBUYER es el monto efectivamente pagado por el comprador, que incluye el costo financiero total.
 
 <a name="ejemplo"></a>      
 ####Ejemplo
