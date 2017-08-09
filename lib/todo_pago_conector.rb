@@ -73,16 +73,7 @@ class TodoPagoConector
   end
 
   def voidRequest(refoundOptions)
-    message = {
-      Security: refoundOptions[:Security],
-      Merchant: refoundOptions[:Merchant],
-      RequestKey: refoundOptions[:RequestKey],
-    }
-
-    client = TodoPagoConector.getClientSoap($j_wsdls['Authorize'], 'Authorize')
-    response= client.call(:void_request, message:message)
-    resp = response.hash
-    return resp.to_json
+    return @soapConnector.voidRequest(refoundOptions)
   end
 
   ########################################################################

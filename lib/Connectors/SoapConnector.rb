@@ -49,6 +49,20 @@ class SoapConnector < ServiceConnector
 		return resp.to_json
 	end
 
+	def voidRequest(refoundOptions)
+		message = {
+			Security: refoundOptions[:Security],
+			Merchant: refoundOptions[:Merchant],
+			RequestKey: refoundOptions[:RequestKey],
+		}
+
+		client = getClientSoap(@j_wsdls['Authorize'], $tenant + 'Authorize')
+		response= client.call(:void_request, message:message)
+		resp = response.hash
+
+		return resp.to_json
+	end
+
 	def returnRequest(refoundOptions)
 		message = {
 			Security: refoundOptions[:Security],

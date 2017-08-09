@@ -5,7 +5,7 @@ Todo Pago - módulo SDK-Ruby para conexión con gateway de pago
  + [Instalación](#instalacion)
    + [Creación de la gema TodoPagoConector](#creategem)
    + [Instalación de la gema TodoPagoConector](#installgem)
-   + [Versiones de Ruby soportadas](#Versionesderubysoportadas)
+   + [Versiones de Ruby soportadas](#versionesderubysoportadas)
    + [Generalidades](#general)
  + [Ambientes](#test)
  + [Uso](#uso)
@@ -14,11 +14,16 @@ Todo Pago - módulo SDK-Ruby para conexión con gateway de pago
       + [Diagrama de secuencia](#secuencia)
       + [Solicitud de autorización](#solicitudautorizacion)
       + [Datos adicionales para prevención de fraude](#datosadicionales)
+      + [Opciones adicionales](#opcionesadicionales)
+        + [Rango de cuotas](#coutas)
+        + [Filtrado de Medios de pago](#filtromp)
+        + [Tiempo de vida de la transacción](#timeout)      
     + [Confirmación de transacción](#confirmatransaccion)
     + [Ejemplo](#ejemplo)
     + [Características](#caracteristicas)
       + [Status de la operación](#status)
       + [Consulta de operaciones por rango de tiempo](#statusdate)
+      + [Descubrimiento de Medios de Pago](#discover)
       + [Devolución](#devolucion)
       + [Devolución parcial](#devolucionparcial)
       + [Formulario híbrido](#formhidrido)
@@ -57,7 +62,7 @@ Se debe obtener el archivo TodoPagoConector.gem
 ```
 [<sub>Volver a inicio</sub>](#inicio)
 
-<a name="Versionesdephpsoportadas"></a>
+<a name="versionesderubysoportadas"></a>
 
 #### 3. Versiones de Ruby soportadas
 La versión implementada de la SDK, esta testeada para versiones de Ruby desde 1.9.3 en adelante.
@@ -112,7 +117,7 @@ Una vez adheridos se creará automáticamente una cuenta virtual, en la cual se 
 
 <a name="secuencia"></a>
 ## Diagrama de secuencia
-![imagen de configuracion](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/secuencia-page-001.jpg)
+![imagen de configuracion](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/secuencia-003.jpg)
 
 <a name="solicitudautorizacion"></a>
 #### Solicitud de autorización
@@ -783,6 +788,113 @@ $12 ->  12.00</td>
 [<sub>Volver a inicio</sub>](#inicio)
 <br>
 
+<a name="opcionesadicionales"></a>
+#### Opciones adicionales
+Dentro del parámetro *optionsSAR_operacion* pueden enviarse opciones adicionales que habilitan características para esa transacción en particular. A continuación se describen las mismas
+
+<a name="coutas"></a>
+##### Rango de Cuotas
+Es posible setear el rango de cuotas a mostrar en el formulario entre un mínimo y un máximo, enviando los siguientes parametros adicionales
+
+<table>
+  <tr>
+    <th>Campo</th>
+    <th>Requerido</th>
+    <th>Descripción</th>
+    <th>Tipo de Dato</th>
+    <th>Valores posibles / Ejemplo</th>
+  </tr>
+  <tr>
+    <td><b>MININSTALLMENTS</b></td>
+    <td>No</td>
+    <td>Mínimo de cuotas a mostrar en el formulario</td>
+    <td>Numérico</td>
+    <td>3</td>
+  </tr>
+  <tr>
+    <td><b>MAXINSTALLMENTS</b></td>
+    <td>No</td>
+    <td>Máximo de cuotas a mostrar en el formulario</td>
+    <td>Numérico</td>
+    <td>9</td>
+  </tr>  
+</table>
+
+##### Ejemplo
+
+```ruby
+.............................................
+optionsSAR_operacion[:MAXINSTALLMENTS] = "6"
+optionsSAR_operacion[:MININSTALLMENTS] = "3"
+.............................................
+```
+
+<a name="filtromp"></a>
+##### Filtrado de Medios de Pago
+Mediante esta funcionalidad es posible filtrar los medios de pago habilitados en el formulario de pago. Se debe pasar en la llamada al servicio SendAuthorizeRequest un parámetro adicional con los ids de los medio de pago que se desean habilitar, los cuales pueden consultarse mediante el método de [Descubrimiento de Medios de Pago](#discover)
+
+<table>
+  <tr>
+    <th>Campo</th>
+    <th>Requerido</th>
+    <th>Descripción</th>
+    <th>Tipo de Dato</th>
+    <th>Valores posibles / Ejemplo</th>
+  </tr>
+  <tr>
+    <td><b>AVAILABLEPAYMENTMETHODSIDS</b></td>
+    <td>No</td>
+    <td>Lista de los ids de medios de pago habilitados separados por #</td>
+    <td>Alfanumérico</td>
+    <td>1#42#500</td>
+  </tr>
+</table>
+
+##### Ejemplo
+
+```ruby
+.............................................
+optionsSAR_operacion[:AVAILABLEPAYMENTMETHODSIDS] = "1#42#500"
+.............................................
+```
+
+[<sub>Volver a inicio</sub>](#inicio)
+<br>
+
+<a name="timeout"></a>
+##### Tiempo de vida de la transacción
+Es posible setear el tiempo máximo disponible para que el cliente complete el pago en el formulario, el valor por defecto es de 30 minutos. El rango posible es de 5 minutos a 6 horas. Los valores deben ser expresados en milisegundos
+
+<table>
+  <tr>
+    <th>Campo</th>
+    <th>Requerido</th>
+    <th>Descripción</th>
+    <th>Tipo de Dato</th>
+    <th>Valores posibles / Ejemplo</th>
+  </tr>
+  <tr>
+    <td><b>TIMEOUT</b></td>
+    <td>No</td>
+    <td>Tiempo de vida de la transacción en milisegundos</td>
+    <td>Numérico</td>
+    <td>1800000</td>
+  </tr>
+</table>
+
+
+##### Ejemplo
+
+```ruby
+.............................................
+optionsSAR_operacion[:TIMEOUT] = 10*60*1000
+.............................................
+```
+
+[<sub>Volver a inicio</sub>](#inicio)
+<br>
+
+
 
 <a name="test"></a>
 #### Modo Test
@@ -803,6 +915,9 @@ conector_test = TodoPagoConector.new(j_header_http_test, j_wsdls_test, end_point
 
 <a name="status"></a>
 #### Status de la Operación
+![estado](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/secuencia-status.jpg)
+
+
 La SDK cuenta con un método para consultar el status de la transacción desde la misma SDK. El método se utiliza de la siguiente manera:
 
 <table>
@@ -985,9 +1100,28 @@ Además, se puede conocer el estado de las transacciones a través del portal [w
 }
 ```
 
+<a name="discover"></a>
+#### Descubrimiento de Medios de Pago
+
+La SDK cuenta con un método para obtener todos los medios de pago habilitados en TodoPago.
+
+```ruby
+response = tpc.discoverPaymentMethods()
+```
+
 <a name="statusdate"></a>
 #### Consulta de operaciones por rango de tiempo
 En este caso hay que llamar a **getByRangeDateTime()** y devolverá todas las operaciones realizadas en el rango de fechas dado
+
+Campo      | Requerido  | Descripción                                 | Tipo de Dato | Valores posibles / Ejemplo
+-----------|------------|---------------------------------------------|--------------|----------------------------------
+MERCHANT   | Sí         | Nro identificador del comercio              | numérico     | 12305
+STARTDATE  | Sí         | Fecha y hora desde                          | date         | date("Y-m-d", time()-60*60*24*30)
+ENDDATE    | Sí         | Fecha y hora hasta                          | date         | date("Y-m-d", time())
+PAGENUMBER | Sí         | Número de página a la que se desea acceder* | entero       | 2
+
+_* Este método devuelve páginas de 5 transacciones, por medio del campo **PAGENUMBER** se puede indicar a que página se desea acceder._
+
 
 ```ruby
 optionsGBRDT=Hash.new
@@ -1001,6 +1135,7 @@ response = tpc.getByRangeDateTime(optionsGBRDT)
 
 <a name="devolucion"></a>
 #### Devolución
+![devolucion parcial](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/secuencia-devolucion-total.jpg)
 
 El SDK dispone de métodos para realizar la devolución, de una transacción realizada a traves de TodoPago.
 
@@ -1044,14 +1179,6 @@ StatusMessage | Sí          |Resultado de la devolución                       
 
 Si la operación fue realizada correctamente se informará con un código 2011 y un mensaje indicando el éxito de la operación.
 
-```php
-array(
-	"StatusCode" => 2011,
-	"StatusMessage" => "Operación realizada correctamente",
-);
-```
-<br>
-
 ``` ruby
 {:envelope=>{:body=>{:return_response=>{:status_code=>"2011", :status_message=>"TX OK", :authorization_key=>"318974f2-4866-d8e7-9622-9ac21aec0df2", :authorizationcode=>"2011", :"@xmlns:api"=>"http://api.todopago.com.ar"}}, :"@xmlns:soapenv"=>"http://schemas.xmlsoap.org/soap/envelope/"}}
 ```
@@ -1059,8 +1186,11 @@ array(
 
 <a name="devolucionparcial"></a>
 #### Devolución parcial
+![devolucion parcial](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/secuencia-devolucion-parcial.jpg)
 
 La SDK dispone de métodos para realizar la devolución parcial, de una transacción realizada a traves de TodoPago.
+
+_Nota: Para el caso de promociones con costo financiero, se deberá enviar el monto a devolver en base al valor original de la transacción y no del monto finalmente cobrado. TodoPago se encargará de devolver el porcentaje del costo financiero correspondiente a la devolución parcial._
 
 Se debe llamar al método ```returnRequest``` de la siguiente manera:
 
@@ -1110,7 +1240,6 @@ Si la operación fue realizada correctamente se informará con un código 2011 y
 ``` ruby
 {:envelope=>{:body=>{:return_response=>{:status_code=>"2011", :status_message=>"TX OK", :authorization_key=>"318974f2-4866-d8e7-9622-9ac21aec0df2", :authorizationcode=>"2011", :"@xmlns:api"=>"http://api.todopago.com.ar"}}, :"@xmlns:soapenv"=>"http://schemas.xmlsoap.org/soap/envelope/"}}
 ```
-<br>
 <a name="formhidrido"></a>
 #### Formulario híbrido
 
@@ -1118,7 +1247,7 @@ Si la operación fue realizada correctamente se informará con un código 2011 y
 El formulario híbrido, es una alternativa al medio de pago actual por redirección al formulario externo de TodoPago.<br>
 Con el mismo, se busca que el comercio pueda adecuar el look and feel del formulario a su propio diseño.
 
-**Librería**<br>
+**Librería**
 El formulario requiere incluir en la página una librería Javascript de TodoPago.<br>
 El endpoint depende del entorno:
 + Desarrollo: https://developers.todopago.com.ar/resources/TPHybridForm-v0.1.js
@@ -1215,6 +1344,8 @@ El formulario define callbacks javascript, que son llamados según el estado y l
 
 <a name="credenciales"></a>
 #### Obtener credenciales
+![credenciales](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/secuencia-credenciales.jpg)
+
 El SDK permite obtener las credenciales "Authentification", "MerchandId" y "Security" de la cuenta de Todo Pago, ingresando el usuario y contraseña.<br>
 Esta funcionalidad es útil para obtener los parámetros de configuración dentro de la implementación.
 
@@ -1269,7 +1400,7 @@ response = conector.getCredentials(u)
 
 <table>
 <tr><th>Id mensaje</th><th>Mensaje</th></tr>
-<tr><td>-1</td><td>Aprobada.</td></tr>
+<tr><td>-1</td><td>Tu compra fue exitosa.</td></tr>
 <tr><td>1081</td><td>Tu saldo es insuficiente para realizar la transacción.</td></tr>
 <tr><td>1100</td><td>El monto ingresado es menor al mínimo permitido</td></tr>
 <tr><td>1101</td><td>El monto ingresado supera el máximo permitido.</td></tr>
@@ -1289,16 +1420,21 @@ response = conector.getCredentials(u)
 <tr><td>90000</td><td>La cuenta destino de los fondos es inválida. Verificá la información ingresada en Mi Perfil.</td></tr>
 <tr><td>90001</td><td>La cuenta ingresada no pertenece al CUIT/ CUIL registrado.</td></tr>
 <tr><td>90002</td><td>No pudimos validar tu CUIT/CUIL.  Comunicate con nosotros <a href="#contacto" target="_blank">acá</a> para más información.</td></tr>
+<tr><td>99005</td><td>Tu compra no pudo realizarse. Iniciala nuevamente.</td></tr>
 <tr><td>99900</td><td>El pago fue realizado exitosamente</td></tr>
 <tr><td>99901</td><td>No hemos encontrado tarjetas vinculadas a tu Billetera. Podés  adherir medios de pago desde www.todopago.com.ar</td></tr>
 <tr><td>99902</td><td>No se encontro el medio de pago seleccionado</td></tr>
 <tr><td>99903</td><td>Lo sentimos, hubo un error al procesar la operación. Por favor reintentá más tarde.</td></tr>
+<tr><td>99904</td><td>Tu compra no puede ser realizada. Comunicate con tu vendedor.</td></tr>
+<tr><td>99953</td><td>Tu compra no pudo realizarse. Iniciala nuevamente o utilizá otro medio de pago.</td></tr>
+<tr><td>99960</td><td>Esta compra requiere autorización de VISA. Comunicate al número que se encuentra al dorso de tu tarjeta.</td></tr>
+<tr><td>99961</td><td>Esta compra requiere autorización de AMEX. Comunicate al número que se encuentra al dorso de tu tarjeta.</td></tr>
 <tr><td>99970</td><td>Lo sentimos, no pudimos procesar la operación. Por favor reintentá más tarde.</td></tr>
 <tr><td>99971</td><td>Lo sentimos, no pudimos procesar la operación. Por favor reintentá más tarde.</td></tr>
 <tr><td>99978</td><td>Lo sentimos, no pudimos procesar la operación. Por favor reintentá más tarde.</td></tr>
 <tr><td>99979</td><td>Lo sentimos, el pago no pudo ser procesado.</td></tr>
 <tr><td>99980</td><td>Ya realizaste un pago en este sitio por el mismo importe. Si querés realizarlo nuevamente esperá 5 minutos.</td></tr>
-<tr><td>99982</td><td>En este momento la operación no puede ser realizada. Por favor intentá más tarde.</td></tr>
+<tr><td>99982</td><td>Tu compra no pudo ser procesada. Iniciala nuevamente utilizando otro medio de pago.</td></tr>
 <tr><td>99983</td><td>Lo sentimos, el medio de pago no permite la cantidad de cuotas ingresadas. Por favor intentá más tarde.</td></tr>
 <tr><td>99984</td><td>Lo sentimos, el medio de pago seleccionado no opera en cuotas.</td></tr>
 <tr><td>99985</td><td>Lo sentimos, el pago no pudo ser procesado.</td></tr>
@@ -1310,7 +1446,7 @@ response = conector.getCredentials(u)
 <tr><td>99991</td><td>Los datos informados son incorrectos. Por favor ingresalos nuevamente.</td></tr>
 <tr><td>99992</td><td>La fecha de vencimiento es incorrecta. Por favor seleccioná otro medio de pago o actualizá los datos.</td></tr>
 <tr><td>99993</td><td>La tarjeta ingresada no está vigente. Por favor seleccioná otra tarjeta o actualizá los datos.</td></tr>
-<tr><td>99994</td><td>El saldo de tu tarjeta no te permite realizar esta operacion.</td></tr>
+<tr><td>99994</td><td>El saldo de tu tarjeta no te permite realizar esta compra. Iniciala nuevamente utilizando otro medio de pago.</td></tr>
 <tr><td>99995</td><td>La tarjeta ingresada es invalida. Seleccioná otra tarjeta para realizar el pago.</td></tr>
 <tr><td>99996</td><td>La operación fué rechazada por el medio de pago porque el monto ingresado es inválido.</td></tr>
 <tr><td>99997</td><td>Lo sentimos, en este momento la operación no puede ser realizada. Por favor intentá más tarde.</td></tr>
@@ -1325,7 +1461,6 @@ response = conector.getCredentials(u)
 
 <table>
 <tr><td>**Id mensaje**</td><td>**Descripción**</td></tr>
-<tr><td>99977</td><td>Transaccion denegada por validador de TP</td></tr>
 <tr><td>98001 </td><td>ERROR: El campo CSBTCITY es requerido</td></tr>
 <tr><td>98002 </td><td>ERROR: El campo CSBTCOUNTRY es requerido</td></tr>
 <tr><td>98003 </td><td>ERROR: El campo CSBTCUSTOMERID es requerido</td></tr>
